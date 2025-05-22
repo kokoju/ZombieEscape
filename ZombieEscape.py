@@ -24,11 +24,37 @@ matriz_prueba = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-
 # Haremos las cuadrículas del grid de 36x36, por lo que la pantalla tendrá 36x35 de ancho y 36x20 de alto
 tamaño_cuadro = 36  # tamaño de cada cuadro de la grid en píxeles
 ancho = tamaño_cuadro * 35 # ancho de la pantalla en píxeles
 alto = tamaño_cuadro * 20  # alto de la pantalla en píxeles
+
+# Genera una matriz para poder disparar
+def generador_matriz_aleatoria():
+    global ancho, alto, tamaño_cuadro
+    cantidad_cuadros_ancho = ancho // tamaño_cuadro  # cantidad de cuadros en el ancho
+    cantidad_cuadros_alto = alto // tamaño_cuadro  # cantidad de cuadros en el alto
+    matriz = [[0 for _ in range(cantidad_cuadros_ancho)] for _ in range(cantidad_cuadros_alto)]  # Inicializa la matriz con ceros (igual a la matriz de prueba)
+    
+    tamaño_acierto = 20  # Tamaño del acierto (no puede ser mayor a la cantidad de cuadros en el alto)
+
+    # Con la matriz generada, crearemos un cuadro de 8x8 donde acertar la bala del jugador
+    punto_inicio_cuadro = (randint(0, cantidad_cuadros_alto - tamaño_acierto), randint(0, cantidad_cuadros_alto - tamaño_acierto))   # Genera una posición aleatoria donde inciarlo
+    for fila in range(cantidad_cuadros_alto):
+        for columna in range(cantidad_cuadros_ancho):
+            if (fila, columna) == punto_inicio_cuadro:  # Si la posición es la misma que la generada, se inicia el cuad
+                for i in range(tamaño_acierto):  # Crea un cuadro de 8x8
+                    for j in range(tamaño_acierto):
+                        matriz[fila + i][columna + j] = 3  
+                break  # Sale del bucle
+    return matriz
+
+
+matriz_disp = generador_matriz_aleatoria()
+
+# Imagenes
+mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
+
 
 alto_matriz = len(matriz_prueba)  # largo de la matriz
 ancho_matriz = len(matriz_prueba[0])  # ancho de la matriz
@@ -48,6 +74,11 @@ display.set_caption("Dungeon's Sniper")  # Título de la ventana
 clock = time.Clock()  # Crea un objeto de reloj para controlar la tasa de refresco, necesario para la física y el movimiento
 running = True  # Variable para controlar el bucle principal del juego: mientras sea True, el juego seguirá corriendo
 dt = 0  # delta time, utilizado para la física de la tasa de refresco 
+
+def menu():  # Esta función muestra el menú principal del juego
+    # Aquí se puede agregar la lógica para mostrar el menú y esperar la entrada del usuario
+    pass
+
 
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
     for fila in range(len(matriz_prueba)):
@@ -167,13 +198,26 @@ def movimiento_enemigos():
                         matriz_prueba[fila][nueva_col] = 3
                         no_movimiento = False
 
-                
+sniping = False  # Variable para controlar el modo de disparo
+angulo = 0  # Variable para controlar el ángulo de la mira
+
+def sniping_mode(cursor_pos):
+    global angulo
+    pantalla.fill("black")  # Limpia la pantalla
+    angulo += 2
+    dibujar_matriz(matriz_disp)
+    # Aumentar ángulo (puedes ajustar la velocidad aquí)
+    # Rotar la imagen
+    imagen_rotada = transform.rotate(mira, angulo)  # Rota la imagen de la mira
+    pantalla.blit(imagen_rotada, (cursor_pos[0] - imagen_rotada.get_width() // 2, cursor_pos[1] - imagen_rotada.get_height() // 2))  # Dibuja la imagen rotada en la posición del cursor
+
+            
 def game_over():
     print("GAME OVER, el jugador ha muerto")  # Aquí se puede agregar la lógica para el game over, como reiniciar el juego o mostrar un mensaje
                 
 
 
-def dibujar_matriz():
+def dibujar_matriz(matriz=matriz_prueba):
     # DISCLAIMER: El código no funciona correctamente con (fila, columna) en las coords, ya que no se dibujaría bien
     # Si se quisiera dibujar lo que sale en (0, 1) en la matriz y dibujamos (0, 1) en pantalla, se dibujaría abajo del la esquina inferior izquierda
     # (ya que no nos movemos horizontalmente y bajamos 1 verticalmente): este cuadro se dibujaría realmente en (1, 0), por lo que se debe hacer (columna, fila)
@@ -184,28 +228,28 @@ def dibujar_matriz():
     pantalla.fill("black")
 
     # Se recorre la matriz: esto para dibujar los cuadros generales de la matriz
-    for fila in range(len(matriz_prueba)):
-        for columna in range(len(matriz_prueba[fila])):
+    for fila in range(len(matriz)):
+        for columna in range(len(matriz[fila])):
             # Se pintan los cuadros según el valor de la matriz (0 es vacío, 1 es pared, 2 es jugador y 3 es enemigo)
-            if matriz_prueba[fila][columna] == 1:
+            if matriz[fila][columna] == 1:
                 draw.rect(pantalla, "blue", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz_prueba[fila][columna] == 2:
+            elif matriz[fila][columna] == 2:
                 # Dibuja el jugador
                 draw.rect(pantalla, "green", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz_prueba[fila][columna] == 3:
+            elif matriz[fila][columna] == 3:
                 # Dibuja al enemigo
                 draw.rect(pantalla, "red", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
                 vision_enemigos()  # Llama a la función para calcular la visión del enemigo
-            elif matriz_prueba[fila][columna] == 4:
+            elif matriz[fila][columna] == 4:
                 # Dibuja el área de visión del enemigo
                 draw.rect(pantalla, "orange", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz_prueba[fila][columna] == 5:
+            elif matriz[fila][columna] == 5:
                 draw.rect(pantalla, "yellow", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
+
 
 # Bucle que corre el juego mientras running sea True
 while running:
     player_pos = obtener_coords_jugador()  # Obtiene las coordenadas del jugador
-    sniping = False  # Variable para controlar el modo de disparo
     if player_pos is None:  # Si no se encuentra el jugador, se termina el juego
         game_over()
 
@@ -216,7 +260,7 @@ while running:
 
         
         elif evento.type == KEYDOWN:
-            if not player_pos is None:  # Si el jugador no es None, se revisa si se presionan las teclas
+            if not player_pos is None and not sniping:  # Si el jugador no es None y no se está en el otro modo, se revisa si se presionan las teclas
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
                 # Gracias a los alto_matriz y ancho_matriz, se genera un loop si el jugador intenta salir de la pantalla, como PAC-MAN
                 if evento.key == K_w and matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
@@ -237,6 +281,10 @@ while running:
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_SPACE:  # Si se presiona la barra espaciadora, se activa el modo de disparo
                     sniping = True
+                
+            elif not player_pos is None:  # Sección para el modo de disparo
+                if evento.key == K_SPACE:  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
+                    sniping = False
 
         
 
@@ -246,6 +294,8 @@ while running:
     # Llama a la función para dibujar la matriz
     if not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
         dibujar_matriz()
+    elif sniping:  # Si está en modo de disparo, se dibuja la matriz de disparo
+        sniping_mode(mouse.get_pos())
 
     # Usa time.Clock() y la variable dt para limitar la tasa de refresco a 60 FPS
     dt = clock.tick(60) / 1000
