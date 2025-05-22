@@ -36,7 +36,7 @@ def generador_matriz_aleatoria():
     cantidad_cuadros_alto = alto // tamaño_cuadro  # cantidad de cuadros en el alto
     matriz = [[0 for _ in range(cantidad_cuadros_ancho)] for _ in range(cantidad_cuadros_alto)]  # Inicializa la matriz con ceros (igual a la matriz de prueba)
     
-    tamaño_acierto = 20  # Tamaño del acierto (no puede ser mayor a la cantidad de cuadros en el alto)
+    tamaño_acierto = 8  # Tamaño del acierto (no puede ser mayor a la cantidad de cuadros en el alto)
 
     # Con la matriz generada, crearemos un cuadro de 8x8 donde acertar la bala del jugador
     punto_inicio_cuadro = (randint(0, cantidad_cuadros_alto - tamaño_acierto), randint(0, cantidad_cuadros_alto - tamaño_acierto))   # Genera una posición aleatoria donde inciarlo
