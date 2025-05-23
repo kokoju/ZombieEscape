@@ -8,32 +8,44 @@ matriz_prueba = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+# En estas casillas, tendremos la siguiente información:
+# 0 = vacío
+# 1 = pared
+# 2 = jugador
+# 3 = enemigo
+# 4 = visión del enemigo
+# 5 = escondite
+# 6 = escondite usado
+# 7 = salida
+
 # Haremos las cuadrículas del grid de 36x36, por lo que la pantalla tendrá 36x35 de ancho y 36x20 de alto
 tamaño_cuadro = 36  # tamaño de cada cuadro de la grid en píxeles
-ancho = tamaño_cuadro * 35 # ancho de la pantalla en píxeles
-alto = tamaño_cuadro * 20  # alto de la pantalla en píxeles
+cantidad_cuadros_ancho = 35  # cantidad de cuadros en el ancho
+cantidad_cuadros_alto = 20  # cantidad de cuadros en el alto
+cantidad_cuadros_menu = 3
+
+ancho = tamaño_cuadro * (cantidad_cuadros_ancho + cantidad_cuadros_menu) # ancho de la pantalla en píxeles
+alto = tamaño_cuadro * cantidad_cuadros_alto  # alto de la pantalla en píxeles
 
 # Genera una matriz para poder disparar
 def generador_matriz_aleatoria():
-    global ancho, alto, tamaño_cuadro
-    cantidad_cuadros_ancho = ancho // tamaño_cuadro  # cantidad de cuadros en el ancho
-    cantidad_cuadros_alto = alto // tamaño_cuadro  # cantidad de cuadros en el alto
+    global cantidad_cuadros_ancho, cantidad_cuadros_alto
     matriz = [[0 for _ in range(cantidad_cuadros_ancho)] for _ in range(cantidad_cuadros_alto)]  # Inicializa la matriz con ceros (igual a la matriz de prueba)
     
     tamaño_acierto = 8  # Tamaño del acierto (no puede ser mayor a la cantidad de cuadros en el alto)
@@ -57,14 +69,6 @@ mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
 alto_matriz = len(matriz_prueba)  # largo de la matriz
 ancho_matriz = len(matriz_prueba[0])  # ancho de la matriz
 
-# En estas casillas, tendremos la siguiente información:
-# 0 = vacío
-# 1 = pared
-# 2 = jugador
-# 3 = enemigo
-# 4 = visión del enemigo
-# 5 = salida
-
 # Configuración de la ventana 
 init()
 pantalla = display.set_mode((ancho, alto))  # Configura la ventana
@@ -72,10 +76,29 @@ display.set_caption("Dungeon's Sniper")  # Título de la ventana
 clock = time.Clock()  # Crea un objeto de reloj para controlar la tasa de refresco, necesario para la física y el movimiento
 running = True  # Variable para controlar el bucle principal del juego: mientras sea True, el juego seguirá corriendo
 dt = 0  # delta time, utilizado para la física de la tasa de refresco 
+fuente_texto = font.Font("assets/FUENTEJUEGO.TTF", 30)
+
+# VARIABLES
+
+sniping = False  # Variable para controlar el modo de disparo
+angulo = 0  # Variable para controlar el ángulo de la mira
+disparo = False  # Variable para controlar si se disparó o no
+matriz_disparo = None  # Guarda la matriz de disparo
+mostrando_disparo = False  # Variable para controlar si se está mostrando el disparo
+tiempo_disparo= None # Variable para controlar el tiempo transcurrido desde el disparo
+tiempo_mostrar_disparo = 2000 # Variable para controlar cuanto tiempo se muestra el disparo, antes de volver al juego (en milisegundos)
+cantidad_disparos = 5 # Variable para controlar la cantidad de disparos disponibles
 
 def menu():  # Esta función muestra el menú principal del juego
     # Aquí se puede agregar la lógica para mostrar el menú y esperar la entrada del usuario
     pass
+
+
+def dibujar_hud():  # Esta función muestra el HUD del juego
+    global ancho, alto, cantidad_cuadros_ancho, tamaño_cuadro,cantidad_disparos
+    draw.rect(pantalla, "black", (cantidad_cuadros_ancho * tamaño_cuadro, 0, ancho*tamaño_cuadro, alto*tamaño_cuadro))  # Dibuja un rectángulo gris en la parte derecha para el HUD
+    disparos_restantes = fuente_texto.render(f"x{cantidad_disparos}", False, "white")  # Renderiza el texto de la cantidad de disparos restantes
+    pantalla.blit(disparos_restantes, ((cantidad_cuadros_ancho + 1.35)* tamaño_cuadro, 20))  # Dibuja el texto en la pantalla
 
 
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
@@ -196,14 +219,6 @@ def movimiento_enemigos():
                         matriz_prueba[fila][nueva_col] = 3
                         no_movimiento = False
 
-sniping = False  # Variable para controlar el modo de disparo
-angulo = 0  # Variable para controlar el ángulo de la mira
-disparo = False  # Variable para controlar si se disparó o no
-matriz_disparo = None  # Guarda la matriz de disparo
-mostrando_disparo = False  # Variable para controlar si se está mostrando el disparo
-tiempo_transcurrido = None # Variable para controlar el tiempo transcurrido desde el disparo
-tiempo_mostrar_disparo = 0  # Variable para controlar cuanto tiempo se muestra el disparo, antes de volver al juego
-
 def sniping_mode(cursor_pos, disparo=False):
     global angulo, matriz_disparo
     pantalla.fill("black")  # Limpia la pantalla
@@ -218,15 +233,15 @@ def sniping_mode(cursor_pos, disparo=False):
 
 def admnistrar_disparo(cursor_por):
     global tamaño_cuadro, matriz_disparo
+    # Se obtiene la posición del mouse y se convierte a coordenadas de la matriz
     fila = cursor_por[1] // tamaño_cuadro
     columna = cursor_por[0] // tamaño_cuadro
-
+    # Se revisa si la posición está dentro de la matriz
     if 0 <= fila < len(matriz_disparo) and 0 <= columna < len(matriz_disparo[0]):
         if matriz_disparo[fila][columna] == 3:
-            print(True)
-            return True
-    print(False)
-    return False
+            return True  # Si la posición es un enemigo, se devuelve True
+        return False  # Si la posición no es un enemigo, se devuelve False
+    return None  # Si la posición no está dentro de la matriz, se devuelve None
 
 
 
@@ -264,6 +279,10 @@ def dibujar_matriz(matriz=matriz_prueba):
                 # Dibuja el área de visión del enemigo
                 draw.rect(pantalla, "orange", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
             elif matriz[fila][columna] == 5:
+                draw.rect(pantalla, "violet", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
+            elif matriz[fila][columna] == 6:
+                draw.rect(pantalla, "pink", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
+            elif matriz[fila][columna] == 7:
                 draw.rect(pantalla, "yellow", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
 
 
@@ -284,20 +303,36 @@ while running:
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
                 # Gracias a los alto_matriz y ancho_matriz, se genera un loop si el jugador intenta salir de la pantalla, como PAC-MAN
                 if evento.key == K_w and matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
-                    matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                    matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
+                    if matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] == 5:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 6
+                    else:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_s and matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
-                    matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                    matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
+                    if matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] == 5:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 6
+                    else:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_a and matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] not in [1, 3]: # Revisa si no hay pared o enemigo
-                    matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                    matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
+                    if matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] == 5:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 6
+                    else:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_d and matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] not in [1, 3]: # Revisa si no hay pared o enemigo
-                    matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                    matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
+                    if matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] == 5:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 6
+                    else:
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_SPACE:  # Si se presiona la barra espaciadora, se activa el modo de disparo
                     sniping = True
@@ -307,18 +342,23 @@ while running:
             elif not player_pos is None:  # Sección para el modo de disparo
                 if evento.key == K_SPACE and not mostrando_disparo :  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
                     sniping = False
-        elif evento.type == MOUSEBUTTONDOWN:  
+        elif evento.type == MOUSEBUTTONDOWN and not disparo:  # Si se presiona el mouse y no se ha disparado, se activa el comportamiento de disparo
             if sniping:
                 disparo = True  # Se activa la variable de disparo (esto detiene la rotación de la mira)
                 mostrando_disparo = True  # Se activa la variable para mostrar el disparo
-                time.set_timer(tiempo_transcurrido, 0)  # Se guarda el tiempo en el que se disparó
+                tiempo_disparo = time.get_ticks()  # Se guarda el tiempo en el que se disparó
                 admnistrar_disparo(mouse.get_pos())  # Llama a la función para administrar el disparo
+                if admnistrar_disparo(mouse.get_pos()) == None:
+                    print("No es válido disparar aquí")
+                    disparo = False
+                    mostrando_disparo = False
+                    tiempo_disparo = None
         
-        if tiempo_transcurrido is not None and tiempo_transcurrido >= tiempo_mostrar_disparo:  # Si se disparó, se revisa si el tiempo transcurrido es mayor a 1 segundo
-            sniping = False  # Se desactiva el modo de disparo
-            disparo = False  # Se desactiva la variable de disparo
-            mostrando_disparo = False  # Se desactiva la variable para mostrar el disparo
-            tiempo_transcurrido = None  # Se reinicia el tiempo transcurrido
+    if tiempo_disparo is not None and time.get_ticks() - tiempo_disparo >= tiempo_mostrar_disparo:  # Si se disparó, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el disparo
+        sniping = False  # Se desactiva el modo de disparo
+        disparo = False  # Se desactiva la variable de disparo
+        mostrando_disparo = False  # Se desactiva la variable para mostrar el disparo
+        tiempo_disparo = None  # Se reinicia el tiempo de cuando se disparó
             
     # flip() the display to put your work on screen
     display.flip()
@@ -331,11 +371,11 @@ while running:
         sniping_mode(mouse.get_pos(), disparo)
     elif sniping:  # Si está en modo de disparo, se dibuja la matriz de disparo
         sniping_mode(mouse.get_pos())
+    dibujar_hud()
 
     # Usa time.Clock() y la variable dt para limitar la tasa de refresco a 60 FPS
     dt = clock.tick(60) / 1000
-    x, y = mouse.get_pos()  # Obtiene la posición del mouse
+    # x, y = mouse.get_pos()  # Obtiene la posición del mouse
     # print (y//tamaño_cuadro, x//tamaño_cuadro)  # Imprime la posición del mouse
-
 
 quit()
