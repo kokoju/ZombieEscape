@@ -50,8 +50,6 @@ def generador_matriz_aleatoria():
     return matriz
 
 
-matriz_disp = generador_matriz_aleatoria()
-
 # Imagenes
 mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
 
@@ -200,16 +198,38 @@ def movimiento_enemigos():
 
 sniping = False  # Variable para controlar el modo de disparo
 angulo = 0  # Variable para controlar el ángulo de la mira
+disparo = False  # Variable para controlar si se disparó o no
+matriz_disparo = None  # Guarda la matriz de disparo
+mostrando_disparo = False  # Variable para controlar si se está mostrando el disparo
+tiempo_transcurrido = None # Variable para controlar el tiempo transcurrido desde el disparo
+tiempo_mostrar_disparo = 0  # Variable para controlar cuanto tiempo se muestra el disparo, antes de volver al juego
 
-def sniping_mode(cursor_pos):
-    global angulo
+def sniping_mode(cursor_pos, disparo=False):
+    global angulo, matriz_disparo
     pantalla.fill("black")  # Limpia la pantalla
-    angulo += 2
-    dibujar_matriz(matriz_disp)
+    if not disparo:  # Si no se disparó, la mira gira
+        angulo += 2
+    if disparo:
+        dibujar_matriz(matriz_disparo)
     # Aumentar ángulo (puedes ajustar la velocidad aquí)
     # Rotar la imagen
     imagen_rotada = transform.rotate(mira, angulo)  # Rota la imagen de la mira
     pantalla.blit(imagen_rotada, (cursor_pos[0] - imagen_rotada.get_width() // 2, cursor_pos[1] - imagen_rotada.get_height() // 2))  # Dibuja la imagen rotada en la posición del cursor
+
+def admnistrar_disparo(cursor_por):
+    global tamaño_cuadro, matriz_disparo
+    fila = cursor_por[1] // tamaño_cuadro
+    columna = cursor_por[0] // tamaño_cuadro
+
+    if 0 <= fila < len(matriz_disparo) and 0 <= columna < len(matriz_disparo[0]):
+        if matriz_disparo[fila][columna] == 3:
+            print(True)
+            return True
+    print(False)
+    return False
+
+
+
 
             
 def game_over():
@@ -281,23 +301,41 @@ while running:
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_SPACE:  # Si se presiona la barra espaciadora, se activa el modo de disparo
                     sniping = True
+                    matriz_disparo = generador_matriz_aleatoria()
+                    
                 
             elif not player_pos is None:  # Sección para el modo de disparo
-                if evento.key == K_SPACE:  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
+                if evento.key == K_SPACE and not mostrando_disparo :  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
                     sniping = False
-
+        elif evento.type == MOUSEBUTTONDOWN:  
+            if sniping:
+                disparo = True  # Se activa la variable de disparo (esto detiene la rotación de la mira)
+                mostrando_disparo = True  # Se activa la variable para mostrar el disparo
+                time.set_timer(tiempo_transcurrido, 0)  # Se guarda el tiempo en el que se disparó
+                admnistrar_disparo(mouse.get_pos())  # Llama a la función para administrar el disparo
         
-
+        if tiempo_transcurrido is not None and tiempo_transcurrido >= tiempo_mostrar_disparo:  # Si se disparó, se revisa si el tiempo transcurrido es mayor a 1 segundo
+            sniping = False  # Se desactiva el modo de disparo
+            disparo = False  # Se desactiva la variable de disparo
+            mostrando_disparo = False  # Se desactiva la variable para mostrar el disparo
+            tiempo_transcurrido = None  # Se reinicia el tiempo transcurrido
+            
     # flip() the display to put your work on screen
     display.flip()
 
     # Llama a la función para dibujar la matriz
     if not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
         dibujar_matriz()
+    elif sniping and disparo:
+        # Si se se disparó, si cambia la rotación de la mira en el modo disparo
+        sniping_mode(mouse.get_pos(), disparo)
     elif sniping:  # Si está en modo de disparo, se dibuja la matriz de disparo
         sniping_mode(mouse.get_pos())
 
     # Usa time.Clock() y la variable dt para limitar la tasa de refresco a 60 FPS
     dt = clock.tick(60) / 1000
+    x, y = mouse.get_pos()  # Obtiene la posición del mouse
+    # print (y//tamaño_cuadro, x//tamaño_cuadro)  # Imprime la posición del mouse
+
 
 quit()
