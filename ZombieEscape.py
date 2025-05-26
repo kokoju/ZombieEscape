@@ -4,8 +4,8 @@ from random import *
 matriz_prueba = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 5, 5, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -88,6 +88,7 @@ mostrando_disparo = False  # Variable para controlar si se está mostrando el di
 tiempo_disparo= None # Variable para controlar el tiempo transcurrido desde el disparo
 tiempo_mostrar_disparo = 2000 # Variable para controlar cuanto tiempo se muestra el disparo, antes de volver al juego (en milisegundos)
 cantidad_disparos = 5 # Variable para controlar la cantidad de disparos disponibles
+coords_enemigo_eliminar = None  # Variable para guardar las coordenadas del enemigo que se quiere elminar
 
 def menu():  # Esta función muestra el menú principal del juego
     # Aquí se puede agregar la lógica para mostrar el menú y esperar la entrada del usuario
@@ -305,49 +306,58 @@ while running:
 
                 # Movimiento hacia arriba
                 if evento.key == K_w and matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
-                    if matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] == 5: # Si el escondite está vacío, se mueve al escondite
+                    # Salida del escondite anterior
+                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    else: # Si no estaba en un escondite, se marca la posición como vacía
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 6
-                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
-                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
-                    else:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+
+                    # Entrar a un nuevo escondite
+                    if matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] == 5:
+                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 6 # Se marca el escondite como usado
+                    else:  # Si no hay escondite, se marca la posición como jugador
                         matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 
                 # Movimiento hacia abajo
                 if evento.key == K_s and matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
+                    # Salida del escondite anterior
+                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    else: # Si no estaba en un escondite, se marca la posición como vacía
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+
+                    # Entrar a un nuevo escondite
                     if matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] == 5:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 6
-                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
-                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
-                    else:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 6 # Se marca el escondite como usado
+                    else:  # Si no hay escondite, se marca la posición como jugador
                         matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_a and matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] not in [1, 3]: # Revisa si no hay pared o enemigo
+                    # Salida del escondite anterior
+                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    else: # Si no estaba en un escondite, se marca la posición como vacía
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+
+                    # Entrar a un nuevo escondite
                     if matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] == 5:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 6
-                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
-                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
-                    else:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 6 # Se marca el escondite como usado
+                    else:  # Si no hay escondite, se marca la posición como jugador
                         matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
-                if evento.key == K_d and matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] not in [1, 3]: # Revisa si no hay pared o enemigo
+                if evento.key == K_d and matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] not in [1, 3]:  # Si no hay pared o enemigo
+
+                    # Salida del escondite anterior
+                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    else: # Si no estaba en un escondite, se marca la posición como vacía
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+
+                    # Entrar a un nuevo escondite
                     if matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] == 5:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
-                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 6
-                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
-                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
-                    else:
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 6 # Se marca el escondite como usado
+                    else:  # Si no hay escondite, se marca la posición como jugador
                         matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 if evento.key == K_SPACE:  # Si se presiona la barra espaciadora, se activa el modo de disparo
