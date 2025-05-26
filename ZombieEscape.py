@@ -14,7 +14,7 @@ matriz_prueba = [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -104,7 +104,7 @@ def dibujar_hud():  # Esta función muestra el HUD del juego
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
     for fila in range(len(matriz_prueba)):
         for columna in range(len(matriz_prueba[fila])):
-            if matriz_prueba[fila][columna] == 2:
+            if matriz_prueba[fila][columna] == 2 or matriz_prueba[fila][columna] == 6:  # Revisa si hay un jugador o un escondite usado
                 return fila, columna
     return None  # Si no se encuentra el jugador, devuelve None
 
@@ -152,17 +152,17 @@ def vision_enemigos():
                 B = 1  # Abajo
                 I = 1  # Izquierda
                 D = 1  # Derecha
-                # Mientras subamos y no haya pared o enemigo, se crea el area de visión
-                while (fila - A) >= 0 and matriz_prueba[fila - A][columna] not in [1, 2, 3] and A <= rango_vision:  
+                # Mientras subamos y no haya un elemento prohibido, se crea el area de visión
+                while (fila - A) >= 0 and matriz_prueba[fila - A][columna] not in [1, 2, 3, 5, 6, 7] and A <= rango_vision:  
                     matriz_prueba[fila - A][columna] = 4
                     A += 1
-                while (fila + B) < len(matriz_prueba) and matriz_prueba[fila + B][columna] not in [1, 2, 3] and B <= rango_vision:
+                while (fila + B) < len(matriz_prueba) and matriz_prueba[fila + B][columna] not in [1, 2, 3, 5, 6, 7] and B <= rango_vision:
                     matriz_prueba[fila + B][columna] = 4
                     B += 1
-                while (columna - I) >= 0 and matriz_prueba[fila][columna - I] not in [1, 2, 3] and I <= rango_vision:
+                while (columna - I) >= 0 and matriz_prueba[fila][columna - I] not in [1, 2, 3, 5, 6, 7] and I <= rango_vision:
                     matriz_prueba[fila][columna - I] = 4
                     I += 1
-                while (columna + D) < len(matriz_prueba[fila]) and matriz_prueba[fila][columna + D] not in [1, 2, 3] and D <= rango_vision:
+                while (columna + D) < len(matriz_prueba[fila]) and matriz_prueba[fila][columna + D] not in [1, 2, 3, 5, 6, 7] and D <= rango_vision:
                     matriz_prueba[fila][columna + D] = 4
                     D += 1
 
@@ -186,19 +186,19 @@ def movimiento_enemigos():
         elif enemigo_ve_jugador(fila, columna):  # Si el enemigo ve al jugador, se mueve hacia él
             player_pos = obtener_coords_jugador()
             if fila < player_pos[0]:  # El jugador se encuntra abajo del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[(fila + 1) % alto_matriz][columna] not in [1, 3]:
+                if matriz_prueba[(fila + 1) % alto_matriz][columna] not in [1, 2, 3, 5, 6, 7]:
                     matriz_prueba[fila][columna] = 0
                     matriz_prueba[(fila + 1) % alto_matriz][columna] = 3
             elif fila > player_pos[0]:  # El jugador se encuntra arriba del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[(fila - 1) % alto_matriz][columna] not in [1, 3]:
+                if matriz_prueba[(fila - 1) % alto_matriz][columna] not in [1, 2, 3, 5, 6, 7]:
                     matriz_prueba[fila][columna] = 0
                     matriz_prueba[(fila - 1) % alto_matriz][columna] = 3
             elif columna < player_pos[1]:  # El jugador se encuntra a la derecha del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[fila][(columna + 1) % ancho_matriz] not in [1, 3]:
+                if matriz_prueba[fila][(columna + 1) % ancho_matriz] not in [1, 2, 3, 5, 6, 7]:
                     matriz_prueba[fila][columna] = 0
                     matriz_prueba[fila][(columna + 1) % ancho_matriz] = 3
             elif columna > player_pos[1]:  # El jugador se encuntra a la izquierda del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[fila][(columna - 1) % ancho_matriz] not in [1, 3]:  # Revisa si no hay pared o enemigo
+                if matriz_prueba[fila][(columna - 1) % ancho_matriz] not in [1, 2, 3, 5, 6, 7]:  # Revisa si no hay pared o enemigo
                     matriz_prueba[fila][columna] = 0
                     matriz_prueba[fila][(columna - 1) % ancho_matriz] = 3
         else:  # Si el enemigo no ve al jugador, se mueve aleatoriamente
@@ -208,13 +208,13 @@ def movimiento_enemigos():
                 hacia = choice([-1, 1])
                 if se_modifica == "fila":
                     nueva_fila = (fila + hacia) % len(matriz_prueba)
-                    if matriz_prueba[nueva_fila][columna] not in [1, 5]:
+                    if matriz_prueba[nueva_fila][columna] not in [1, 2, 3, 5, 6, 7]:
                         matriz_prueba[fila][columna] = 0
                         matriz_prueba[nueva_fila][columna] = 3
                         no_movimiento = False
                 else:
                     nueva_col = (columna + hacia) % len(matriz_prueba[0])
-                    if matriz_prueba[fila][nueva_col] not in [1, 5]:
+                    if matriz_prueba[fila][nueva_col] not in [1, 2, 3, 5, 6, 7]:
                         matriz_prueba[fila][columna] = 0
                         matriz_prueba[fila][nueva_col] = 3
                         no_movimiento = False
@@ -302,18 +302,28 @@ while running:
             if not player_pos is None and not sniping:  # Si el jugador no es None y no se está en el otro modo, se revisa si se presionan las teclas
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
                 # Gracias a los alto_matriz y ancho_matriz, se genera un loop si el jugador intenta salir de la pantalla, como PAC-MAN
+
+                # Movimiento hacia arriba
                 if evento.key == K_w and matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
-                    if matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] == 5:
+                    if matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] == 5: # Si el escondite está vacío, se mueve al escondite
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 6
+                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
+                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
                     else:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
+                
+                # Movimiento hacia abajo
                 if evento.key == K_s and matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
                     if matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] == 5:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 6
+                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
+                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
                     else:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
@@ -322,6 +332,9 @@ while running:
                     if matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] == 5:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 6
+                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
+                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
                     else:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
@@ -330,6 +343,9 @@ while running:
                     if matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] == 5:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 6
+                    elif matriz_prueba[(player_pos[0])][player_pos[1]] == 6:  # Si estaba en un escondite, sale de él
+                        matriz_prueba[player_pos[0]][player_pos[1]] = 5
+                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
                     else:
                         matriz_prueba[player_pos[0]][player_pos[1]] = 0
                         matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
