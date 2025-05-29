@@ -232,20 +232,35 @@ def sniping_mode(cursor_pos, disparo=False):
     imagen_rotada = transform.rotate(mira, angulo)  # Rota la imagen de la mira
     pantalla.blit(imagen_rotada, (cursor_pos[0] - imagen_rotada.get_width() // 2, cursor_pos[1] - imagen_rotada.get_height() // 2))  # Dibuja la imagen rotada en la posición del cursor
 
-def cursor_en_pos_valida(cursor_pos):
-    global tamaño_cuadro, matriz_disparo
+def cursor_en_pos_valida(cursor_pos, matriz):
+    global tamaño_cuadro
     # Se obtiene la posición del mouse y se convierte a coordenadas de la matriz
     fila = cursor_pos[1] // tamaño_cuadro
     columna = cursor_pos[0] // tamaño_cuadro
     # Se revisa si la posición está dentro de la matriz
-    if 0 <= fila < len(matriz_disparo) and 0 <= columna < len(matriz_disparo[0]):
-        if matriz_disparo[fila][columna] == 3:
+    if 0 <= fila < len(matriz) and 0 <= columna < len(matriz[0]):
+        if matriz[fila][columna] == 3:
             return True  # Si la posición es un enemigo, se devuelve True
         return False  # Si la posición no es un enemigo, se devuelve False
     return None  # Si la posición no está dentro de la matriz, se devuelve None
 
-
-
+def administrar_disparo():
+    global disparo, cantidad_disparos, mostrando_disparo, tiempo_disparo, matriz_disparo, coords_enemigo_eliminar, matriz_prueba
+    disparo = True  # Se activa la variable de disparo (esto detiene la rotación de la mira)
+    cantidad_disparos -= 1  # Se resta 1 al contador de disparos
+    mostrando_disparo = True  # Se activa la variable para mostrar el disparo
+    tiempo_disparo = time.get_ticks()  # Se guarda el tiempo en el que se disparó
+    if cursor_en_pos_valida(mouse.get_pos(), matriz_disparo) == None:
+        print("No es válido disparar aquí")
+        # Lógica para que no ocurra nada si el disparo no es válido
+        disparo = False
+        mostrando_disparo = False
+        tiempo_disparo = None  # Reinicia el tiempo de cuando se disparó
+        cantidad_disparos += 1  # Se suma 1 al contador de disparos, ya que no se disparó
+    elif cursor_en_pos_valida(mouse.get_pos(), matriz_disparo) == True:
+        # Si el disparo es válido, se elimina el enemigo al que se le hizo click
+        matriz_prueba[coords_enemigo_eliminar[1]][coords_enemigo_eliminar[0]] = 0
+        limpiar_vision_enemigos()  # Llama a la función para eliminar los restos del área de visión del enemigo eliminado
 
             
 def game_over():
@@ -360,32 +375,23 @@ while running:
                     else:  # Si no hay escondite, se marca la posición como jugador
                         matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
-                if evento.key == MOUSEBUTTONDOWN:  # Si se presiona el cursor, se revisa si se hizo click a un enemigo
-                    x, y = mouse.get_pos()
-                    x_en_matriz = x // tamaño_cuadro  # Convierte la posición del mouse a coordenadas de la matriz
-                    y_en_matriz = y // tamaño_cuadro  # Convierte la posición del mouse a coordenadas de la matriz
-                    if matriz_prueba[y_en_matriz][x_en_matriz] == 3 and cursor_en_pos_valida((x, y)):  # Si se hizo click en un enemigo
-                        # Se activa el modo sniping
-                        sniping = True
-                        matriz_disparo = generador_matriz_aleatoria()
-                        coords_enemigo_eliminar = (x_en_matriz, y_en_matriz)  # Guarda las coordenadas del enemigo a eliminar
-                    
-                
-            elif not player_pos is None:  # Sección para el modo de disparo
-                if evento.key == K_SPACE and not mostrando_disparo :  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
+            
+            if evento.key == K_SPACE and not mostrando_disparo :  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
                     sniping = False
-        elif evento.type == MOUSEBUTTONDOWN and sniping and not disparo:  # Si se presiona el mouse en el modo sniping y no se ha disparado, se activa el comportamiento de disparo
-            if sniping:
-                disparo = True  # Se activa la variable de disparo (esto detiene la rotación de la mira)
-                cantidad_disparos -= 1  # Se resta 1 al contador de disparos
-                mostrando_disparo = True  # Se activa la variable para mostrar el disparo
-                tiempo_disparo = time.get_ticks()  # Se guarda el tiempo en el que se disparó
-                cursor_en_pos_valida(mouse.get_pos())  # Llama a la función para administrar el disparo
-                if cursor_en_pos_valida(mouse.get_pos()) == None:
-                    print("No es válido disparar aquí")
-                    disparo = False
-                    mostrando_disparo = False
-                    tiempo_disparo = None
+
+        elif evento.type == MOUSEBUTTONDOWN and not player_pos is None:  # Si se presiona el cursor, se revisa si se hizo click a un enemigo
+            if not sniping:  # Si no se está en modo de disparo, se revisa si se hizo click en un enemigo
+                x, y = mouse.get_pos()
+                x_en_juego = x // tamaño_cuadro  # Convierte la posición del mouse a coordenadas de la matriz
+                y_en_juego = y // tamaño_cuadro  # Convierte la posición del mouse a coordenadas de la matriz
+                if matriz_prueba[y_en_juego][x_en_juego] == 3 and cursor_en_pos_valida((x, y), matriz_prueba):  # Si se hizo click en un enemigo
+                    # Se activa el modo sniping
+                    sniping = True
+                    matriz_disparo = generador_matriz_aleatoria()
+                    coords_enemigo_eliminar = (x_en_juego, y_en_juego)  # Guarda las coordenadas del enemigo a eliminar
+                    print(coords_enemigo_eliminar)
+            elif sniping and not disparo and cantidad_disparos > 0:  # Si se está en modo de disparo, no se ha disparado y hay disparos disponibles, se activa la dinámica de disparar
+               administrar_disparo()  # Llama a la función para administrar el disparo
         
     if tiempo_disparo is not None and time.get_ticks() - tiempo_disparo >= tiempo_mostrar_disparo:  # Si se disparó, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el disparo
         sniping = False  # Se desactiva el modo de disparo
