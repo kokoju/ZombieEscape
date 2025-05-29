@@ -1,5 +1,26 @@
+# ==================================================================================================================
+#   CONFIGURACIÓN INICIAL DEL JUEGO (INICIO, SONIDO, RESOLUCIÓN, GUARDADOS Y MATRICES)
+# ==================================================================================================================
+
 from pygame import *
 from random import *
+
+FILE_NAME = "guardados.txt"  # Nombre del archivo que contiene las matrices de mapas
+
+def guardar_archivo(file_path, content):
+        archivo = open(file_path, 'w') # w crea o trunca el archivo
+        archivo.write(content)
+        archivo.close()
+
+#lee la información de un archivo
+#E: path
+#S: string con el contenido del archivo
+def leer_archivo(path):
+        archivo = open(path, 'r')
+        contenido = archivo.read()
+        archivo.close()
+        return contenido
+
 
 matriz_prueba = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -62,8 +83,6 @@ def generador_matriz_aleatoria():
     return matriz
 
 
-# Imagenes
-mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
 
 
 alto_matriz = len(matriz_prueba)  # largo de la matriz
@@ -77,8 +96,15 @@ clock = time.Clock()  # Crea un objeto de reloj para controlar la tasa de refres
 running = True  # Variable para controlar el bucle principal del juego: mientras sea True, el juego seguirá corriendo
 dt = 0  # delta time, utilizado para la física de la tasa de refresco 
 fuente_texto = font.Font("assets/FUENTEJUEGO.TTF", 30)
+guardados = eval(leer_archivo(FILE_NAME))
+# print("Guardados cargados:", guardados)  # Imprime los guardados cargados
 
-# VARIABLES
+# ==================================================================================================================
+#   SET DE VARIABLES
+# ==================================================================================================================
+
+menu_activo = True  # Variable para controlar si se está en el menú o no
+selector_activo = False  # Variable para controlar si se está en el selector de nivel o no
 
 sniping = False  # Variable para controlar el modo de disparo
 angulo = 0  # Variable para controlar el ángulo de la mira
@@ -90,9 +116,56 @@ tiempo_mostrar_disparo = 2000 # Variable para controlar cuanto tiempo se muestra
 cantidad_disparos = 5 # Variable para controlar la cantidad de disparos disponibles
 coords_enemigo_eliminar = None  # Variable para guardar las coordenadas del enemigo que se quiere elminar
 
+# ==================================================================================================================
+#   SET DE IMÁGENES UTILIZADAS Y TEXTO
+# ==================================================================================================================
+mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
+imagen_inicio = image.load("assets/ImagenMago.png")  # Carga la imagen de inicio
+icono_municion = image.load("assets/IconoMunicion.png")  # Carga el icono de munición
+
+# ==================================================================================================================
+#   FUNCIONES DEL JUEGO (DIBUJO Y MECÁNICAS)
+# ==================================================================================================================
+
+def verificar_validez_nivel():  # Esta función verifica si el nivel es válido
+    global guardados, cantidad_cuadros_ancho, cantidad_cuadros_alto
+    niveles_validos = []  # Lista para guardar los niveles válidos
+    tiene_1_solo_jugador = False  # Variable para verificar si hay un solo jugador en el nivel
+    tiene_1_sola_salida = False  # Variable para verificar si hay una sola salida en el nivel
+    for niveles in guardados:
+        if len(niveles) != cantidad_cuadros_alto or len(niveles[0]) != cantidad_cuadros_ancho:  # Revisa si el nivel tiene el tamaño correcto
+            continue
+        for fila in range(len(niveles)):
+            for columna in range(len(niveles[0])):
+                if niveles[fila][columna] == 2 and not tiene_1_solo_jugador:  # Revisa si hay un jugador
+                    tiene_1_solo_jugador = True  # Si hay un jugador, se cambia la variable a True
+                elif niveles[fila][columna] == 2 and tiene_1_solo_jugador:
+                    tiene_1_solo_jugador = False
+                    break
+                if niveles[fila][columna] == 7 and not tiene_1_sola_salida:  # Revisa si hay una salida
+                    tiene_1_sola_salida = True  # Si hay una salida, se cambia la variable a True
+                elif niveles[fila][columna] == 7 and tiene_1_sola_salida:
+                    tiene_1_sola_salida = False
+                    break
+        if tiene_1_solo_jugador and tiene_1_sola_salida:  # Si hay un solo jugador y una sola salida, el nivel es válido
+            niveles_validos.append(niveles)  # Se agrega el nivel a la lista de niveles válidos
+    return niveles_validos  # Devuelve la lista de niveles válidos
+
+
 def menu():  # Esta función muestra el menú principal del juego
-    # Aquí se puede agregar la lógica para mostrar el menú y esperar la entrada del usuario
-    pass
+    pantalla.blit(imagen_inicio, (0, 0))  # Pone la imágen de inicio en la pantalla
+
+
+def menu_seleccion_nivel():  # Esta función muestra la selección de nivel del juego
+    pantalla.fill("black")  # Limpia la pantalla
+    pantalla.blit(fuente_texto.render("Selector de nivel", False, "white"), ((ancho// 2) - 170, 50))  # Muestra el texto de selección de nivel
+    pantalla.blit(fuente_texto.render("Presiona las flechas para cambiar de nivel", False, "white"), ((ancho// 2) - 400, 100))  # Muestra el texto de instrucciones
+
+
+def cambio_nivel():  # Esta función cambia el nivel del juego
+    pass    
+
+
 
 
 def dibujar_hud():  # Esta función muestra el HUD del juego
@@ -100,6 +173,7 @@ def dibujar_hud():  # Esta función muestra el HUD del juego
     draw.rect(pantalla, "black", (cantidad_cuadros_ancho * tamaño_cuadro, 0, ancho*tamaño_cuadro, alto*tamaño_cuadro))  # Dibuja un rectángulo gris en la parte derecha para el HUD
     disparos_restantes = fuente_texto.render(f"x{cantidad_disparos}", False, "white")  # Renderiza el texto de la cantidad de disparos restantes
     pantalla.blit(disparos_restantes, ((cantidad_cuadros_ancho + 1.35)* tamaño_cuadro, 20))  # Dibuja el texto en la pantalla
+    pantalla.blit(icono_municion, ((cantidad_cuadros_ancho + 0.9)* tamaño_cuadro, 30))  # Dibuja el icono de munición en la pantalla
 
 
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
@@ -315,7 +389,21 @@ while running:
 
         
         elif evento.type == KEYDOWN:
-            if not player_pos is None and not sniping:  # Si el jugador no es None y no se está en el otro modo, se revisa si se presionan las teclas
+            if evento.key == K_SPACE and menu_activo:  # Si se presiona la tecla ESCAPE, se sale del juego
+                menu_activo = False  # Se sale del menú
+                selector_activo = True  # Se activa el selector de nivel
+
+            if evento.key == K_LEFT and selector_activo:  # Si se presiona la tecla izquierda, se cambia al nivel anterior
+                # Aquí se puede agregar la lógica para cambiar al nivel anterior
+                print("Cambiando al nivel anterior")
+                cambio_nivel(-1)
+
+            elif evento.key == K_RIGHT and selector_activo:  # Si se presiona la tecla derecha, se cambia al siguiente nivel
+                # Aquí se puede agregar la lógica para cambiar al nivel anterior
+                print("Cambiando al siguiente nivel")
+                cambio_nivel(+1)
+
+            elif not player_pos is None and not sniping:  # Si el jugador no es None y no se está en el otro modo, se revisa si se presionan las teclas
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
                 # Gracias a los alto_matriz y ancho_matriz, se genera un loop si el jugador intenta salir de la pantalla, como PAC-MAN
 
@@ -376,9 +464,14 @@ while running:
                         matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
             
-            if evento.key == K_SPACE and not mostrando_disparo :  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
+            if evento.key == K_SPACE and not mostrando_disparo and not menu:  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
                     sniping = False
-
+            
+            if evento.key == K_ESCAPE:  # Si se presiona la tecla ESCAPE, se vuelve al menú
+                if not menu_activo:  # Si no se está en el menú, se vuelve al menú
+                    menu_activo = True  # Se activa el menú
+                    selector_activo = False  # Se desactiva el selector de nivel
+                    
         elif evento.type == MOUSEBUTTONDOWN and not player_pos is None:  # Si se presiona el cursor, se revisa si se hizo click a un enemigo
             if not sniping:  # Si no se está en modo de disparo, se revisa si se hizo click en un enemigo
                 x, y = mouse.get_pos()
@@ -403,14 +496,19 @@ while running:
     display.flip()
 
     # Llama a la función para dibujar la matriz
-    if not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
+    if menu_activo and not selector_activo:  # Si se está en el menú, se dibuja el menú
+        menu()
+    elif not menu_activo and selector_activo:  # Si se está en el selector de nivel, se dibuja el selector de nivel
+        menu_seleccion_nivel()
+    elif not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
         dibujar_matriz()
     elif sniping and disparo:
         # Si se se disparó, si cambia la rotación de la mira en el modo disparo
         sniping_mode(mouse.get_pos(), disparo)
     elif sniping:  # Si está en modo de disparo, se dibuja la matriz de disparo
         sniping_mode(mouse.get_pos())
-    dibujar_hud()
+    if not menu_activo and not selector_activo:  # Si no se está en el menú, se dibuja el HUD
+        dibujar_hud()
 
     # Usa time.Clock() y la variable dt para limitar la tasa de refresco a 60 FPS
     dt = clock.tick(60) / 1000
