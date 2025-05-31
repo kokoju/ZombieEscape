@@ -4,13 +4,9 @@
 
 from pygame import *
 from random import *
+from copy import deepcopy
 
 FILE_NAME = "guardados.txt"  # Nombre del archivo que contiene las matrices de mapas
-
-def guardar_archivo(file_path, content):
-        archivo = open(file_path, 'w') # w crea o trunca el archivo
-        archivo.write(content)
-        archivo.close()
 
 #lee la información de un archivo
 #E: path
@@ -67,7 +63,12 @@ clock = time.Clock()  # Crea un objeto de reloj para controlar la tasa de refres
 running = True  # Variable para controlar el bucle principal del juego: mientras sea True, el juego seguirá corriendo
 dt = 0  # delta time, utilizado para la física de la tasa de refresco 
 fuente_texto = font.Font("assets/FUENTEJUEGO.TTF", 30)
+
+# Cargar los guardados desde el archivo
 guardados = eval(leer_archivo(FILE_NAME))
+
+# deepcopy(objeto) crea una copia completa e independiente del objeto 
+guardados_sin_modificar = deepcopy(guardados) # Copia de los guardados originales, para reestablecer los guardados si es necesario
 # print("Guardados cargados:", guardados)  # Imprime los guardados cargados
 
 # ==================================================================================================================
@@ -94,19 +95,29 @@ mostrando_disparo = False  # Variable para controlar si se está mostrando el di
 tiempo_disparo= None # Variable para controlar el tiempo transcurrido desde el disparo
 tiempo_pasando_nivel = None  # Variable para controlar el tiempo transcurrido desde que se pasó de nivel
 tiempo_game_over = None  # Variable para controlar el tiempo transcurrido desde que se inició el game over
+tiempo_ganar_juego = None  # Variable para controlar el tiempo transcurrido desde que se ganó el juego
 tiempo_mostrar_pantallas = 2000 # Variable para controlar cuanto tiempo se muestra el disparo, antes de volver al juego (en milisegundos)
 
 # Variables para controlar la matriz del juego y la posición del jugador
 matriz_juego = None  # Variable para guardar la matriz del juego, que se establecerá al seleccionar un nivel
 player_pos = None  # Variable para guardar las coordenadas del jugador, que se establecerá al seleccionar un nivel
+cantidad_enemigos_nivel = 4 # Variable para controlar la cantidad de enemigos en el nivel
 
 # ==================================================================================================================
-#   SET DE IMÁGENES UTILIZADAS Y TEXTO
+#   SET DE ASSETS (IMÁGENES, SONIDOS, TEXTO)
 # ==================================================================================================================
 mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
 imagen_inicio = image.load("assets/ImagenMago.png")  # Carga la imagen de inicio
 icono_municion = image.load("assets/IconoMunicion.png")  # Carga el icono de munición
 gorro_seleccion = image.load("assets/GorroSeleccion.png")  # Carga el icono de selección de nivel
+gorro_roto = image.load("assets/GorroRoto.png")  # Carga el icono de gorro roto, que se usa al morir
+gorro_poderoso = image.load("assets/GorroPoderoso.png")  # Carga el icono de gorro poderoso, que se usa al ganar el juego
+
+musica_nivel = mixer.Sound("assets/MusicaNivel.mp3")  # Carga la música del nivel
+sonido_disparo = mixer.Sound("assets/SonidoDisparo.mp3")  # Carga el sonido del disparo
+sonido_menu = mixer.Sound("assets/SonidoMenu.mp3")  # Carga el sonido del menú
+sonido_perder = mixer.Sound("assets/SonidoPerder.mp3")  # Carga el sonido de perder
+sonido_win = mixer.Sound("assets/SonidoWin.mp3")  # Carga el sonido de ganar
 
 # ==================================================================================================================
 #   FUNCIONES DEL JUEGO (DIBUJO Y MECÁNICAS)
@@ -137,9 +148,27 @@ def verificar_validez_nivel(indi_nivel):  # Esta función verifica si el nivel e
 
 indi_nivel_seleccionado = 0  # Nivel seleccionado por el jugador
 
+# Esta función añade enemigos a la matriz del juego
+def añadir_enemigos_a_matriz(matriz, cantidad):
+    global cantidad_cuadros_ancho, cantidad_cuadros_alto
+    # Limpia la matriz de enemigos antes de añadir nuevos
+    for fila in range(len(matriz)):
+            for columna in range(len(matriz[fila])):
+                if matriz[fila][columna] == 3:
+                    matriz[fila][columna] = 0
+
+    distancia_minima = 2  # Distancia mínima entre el jugador y el enemigo
+    for _ in range(cantidad):  # Añade la cantidad de enemigos especificada
+        while True:  # Bucle para encontrar una posición válida para el enemigo
+            fila = randint(0, cantidad_cuadros_alto - 1)  # Genera una fila aleatoria
+            columna = randint(0, cantidad_cuadros_ancho - 1)  # Genera una columna aleatoria
+            player_pos = obtener_coords_jugador()  # Obtiene las coordenadas del jugador
+            if matriz[fila][columna] not in [1, 2, 3, 5, 6, 7] and abs(player_pos[0] - fila) > distancia_minima and abs(player_pos[1] - columna) > distancia_minima:
+                matriz[fila][columna] = 3  # Añade un enemigo en la posición generada
+                break  # Sale del bucle al añadir el enemigo
+
 def dibujar_menu():  # Esta función muestra el menú principal del juego
     pantalla.blit(imagen_inicio, (0, 0))  # Pone la imágen de inicio en la pantalla
-
 
 def dibujar_menu_seleccion_nivel():
     global indi_nivel_seleccionado
@@ -212,19 +241,26 @@ def dibujar_matriz(matriz):
                 draw.rect(pantalla, "yellow", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
 
 def paso_de_nivel():  # Esta función se encarga de pasar al siguiente nivel
-    global indi_nivel_seleccionado, matriz_juego, pasando_nivel_activo, tiempo_pasando_nivel, ganar_juego_activo, cantidad_disparos
+    global indi_nivel_seleccionado, matriz_juego, pasando_nivel_activo, tiempo_pasando_nivel, ganar_juego_activo, cantidad_disparos, guardados, guardados_sin_modificar, cantidad_enemigos_nivel
     
     pasando_nivel_activo = True  # Activa la variable para pasar al siguiente nivel
     tiempo_pasando_nivel = time.get_ticks()  # Guarda el tiempo de inicio del paso de nivel
     cantidad_disparos = 5  # Reinicia la cantidad de disparos a 5 al pasar de nivel
+    guardados = deepcopy(guardados_sin_modificar) # Reinicia los guardados a los originales, para que no se modifiquen al pasar de nivel
 
-    cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
-    while not verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel no es válido, se cambia al siguiente nivel
-        cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
-        if cambio_nivel == len(guardados):
-            ganar_juego_activo = True  # Si se llega al último nivel, se activa la variable de ganar el juego
+    cambio_nivel(1)  # Cambia al siguiente nivel
+    if indi_nivel_seleccionado == 0:  # Si se llega al último nivel, se activa la variable de ganar el juego
+            ganar_juego()
             pasando_nivel_activo = False  # Si se llega al último nivel, se activa la variable de ganar el juego
+    while not verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel no es válido, se cambia al siguiente nivel
+        cambio_nivel(1)  # Cambia al siguiente nivel
+        if indi_nivel_seleccionado == 0:  # Si se llega al último nivel, se activa la variable de ganar el juego
+            ganar_juego()  # Si se llega al último nivel, se activa la variable de ganar el juego
+            pasando_nivel_activo = False  # Si se llega al último nivel, se activa la variable de ganar el juego
+        if verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel es válido, se sale del bucle
+            break
     matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
+    añadir_enemigos_a_matriz(matriz_juego, cantidad_enemigos_nivel)  # Añade enemigos a la matriz del nivel seleccionado
 
 
 def dibujar_paso_de_nivel():  # Esta función se encarga de pasar al siguiente nivel
@@ -241,28 +277,53 @@ def dibujar_paso_de_nivel():  # Esta función se encarga de pasar al siguiente n
     # Se hace igual con el gorro, que funciona como elemento decorativo
     pantalla.blit(gorro_seleccion, ((ancho // 2) - gorro_seleccion.get_width() // 2, 300)) 
 
+def ganar_juego():  # Esta función se encarga de ganar el juego
+    global indi_nivel_seleccionado, ganar_juego_activo, tiempo_ganar_juego, guardados, guardados_sin_modificar, matriz_juego
+    ganar_juego_activo = True  # Activa la variable de ganar el juego
+    guardados = deepcopy(guardados_sin_modificar)  # Reinicia los guardados a los originales, para que no se modifiquen al ganar el juego
+    tiempo_ganar_juego = time.get_ticks()  # Guarda el tiempo de inicio del paso de nivel
+    matriz_juego = None  # Reinicia la matriz del juego a None, ya que no se necesita más
 
 def dibujar_ganar_juego():  # Esta función se encarga de mostrar el mensaje de victoria al jugador
     global indi_nivel_seleccionado, matriz_juego
     pantalla.fill("black")
-    cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
 
     # Letras para el título y las instrucciones
     mensaje_exito = fuente_texto.render("¡Felicidades! Lograste terminar el juego", False, "white")
-
-    while not verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel no es válido, se cambia al siguiente nivel
-        cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
-    matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
-    nivel_a_pasar = fuente_texto.render(f"Pasando al nivel {indi_nivel_seleccionado + 1}", False, "gray")
+    nivel_a_pasar = fuente_texto.render(f"Volviendo al menú", False, "gray")
 
     # Se pone el título y las instrucciones en la pantalla, centradas 
     # Nos ubicamos en la mitad (ancho // 2) y restamos la mitad del ancho del texto para centrarlo: esto se hace con todas las intstrucciones
     pantalla.blit(mensaje_exito, ((ancho // 2) - mensaje_exito.get_width() // 2, 50)) 
-    pantalla.blit(nivel_a_pasar, ((ancho // 2) - nivel_a_pasar.get_width() // 2, 100))  
+    pantalla.blit(nivel_a_pasar, ((ancho // 2) - nivel_a_pasar.get_width() // 2, 100))
 
+    # Se hace igual con el gorro, que funciona como elemento decorativo
+    pantalla.blit(gorro_poderoso, ((ancho // 2) - gorro_poderoso.get_width() // 2, 300)) 
+
+def game_over():  # Esta función se encarga de administrar el coportamiento del game over
+    global game_over_activo, tiempo_game_over, guardados, guardados_sin_modificar, indi_nivel_seleccionado, matriz_juego, cantidad_enemigos_nivel
+    game_over_activo = True  # Activa la variable de game over
+    tiempo_game_over = time.get_ticks()  # Guarda el tiempo de inicio del game over
+    guardados = deepcopy(guardados_sin_modificar)  # Reinicia los guardados a los originales, para que no se modifiquen al morir
+    matriz_juego = guardados[indi_nivel_seleccionado]  # Carga la matriz del nivel seleccionado
+    añadir_enemigos_a_matriz(matriz_juego, cantidad_enemigos_nivel)  # Añade enemigos a la matriz del nivel seleccionado
 
 def dibujar_game_over():
-    print("GAME OVER, el jugador ha muerto")  # Aquí se puede agregar la lógica para el game over, como reiniciar el juego o mostrar un mensaje
+    global indi_nivel_seleccionado, matriz_juego
+    pantalla.fill("black")
+
+    # Letras para el título y las instrucciones
+    mensaje_fallo = fuente_texto.render("¡Perdiste! Un enemigo te tocó", False, "white")
+    volver_a_intentar = fuente_texto.render(f"Vuelve a intentarlo", False, "gray")
+
+    # Se pone el título y las instrucciones en la pantalla, centradas 
+    # Nos ubicamos en la mitad (ancho // 2) y restamos la mitad del ancho del texto para centrarlo: esto se hace con todas las intstrucciones
+    pantalla.blit(mensaje_fallo, ((ancho // 2) - mensaje_fallo.get_width() // 2, 50)) 
+    pantalla.blit(volver_a_intentar, ((ancho // 2) - volver_a_intentar.get_width() // 2, 100))
+
+    # Se hace igual con el gorro, que funciona como elemento decorativo
+    pantalla.blit(gorro_roto, ((ancho // 2) - gorro_roto.get_width() // 2, 300)) 
+
 
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
     global matriz_juego
@@ -352,18 +413,26 @@ def movimiento_enemigos():
             player_pos = obtener_coords_jugador()
             if fila < player_pos[0]:  # El jugador se encuntra abajo del enemigo, por lo que el enemigo se mueve hacia él
                 if matriz_juego[(fila + 1) % cantidad_cuadros_alto][columna] not in [1, 3, 5, 6, 7]:
+                    if matriz_juego[(fila + 1) % cantidad_cuadros_alto][columna] == 2:
+                        game_over()
                     matriz_juego[fila][columna] = 0
                     matriz_juego[(fila + 1) % cantidad_cuadros_alto][columna] = 3
             elif fila > player_pos[0]:  # El jugador se encuntra arriba del enemigo, por lo que el enemigo se mueve hacia él
                 if matriz_juego[(fila - 1) % cantidad_cuadros_alto][columna] not in [1, 3, 5, 6, 7]:
+                    if matriz_juego[(fila - 1) % cantidad_cuadros_alto][columna] == 2:
+                        game_over()
                     matriz_juego[fila][columna] = 0
                     matriz_juego[(fila - 1) % cantidad_cuadros_alto][columna] = 3
             elif columna < player_pos[1]:  # El jugador se encuntra a la derecha del enemigo, por lo que el enemigo se mueve hacia él
                 if matriz_juego[fila][(columna + 1) % cantidad_cuadros_ancho] not in [1, 3, 5, 6, 7]:
+                    if matriz_juego[fila][(columna + 1) % cantidad_cuadros_ancho] == 2:  # Si el enemigo se mueve a la posición del jugador, se activa el game over
+                        game_over()  # Llama a la función para administrar el game over
                     matriz_juego[fila][columna] = 0
                     matriz_juego[fila][(columna + 1) % cantidad_cuadros_ancho] = 3
             elif columna > player_pos[1]:  # El jugador se encuntra a la izquierda del enemigo, por lo que el enemigo se mueve hacia él
                 if matriz_juego[fila][(columna - 1) % cantidad_cuadros_ancho] not in [1, 3, 5, 6, 7]:  # Revisa si no hay pared o enemigo
+                    if matriz_juego[fila][(columna - 1) % cantidad_cuadros_ancho] == 2:  # Si el enemigo se mueve a la posición del jugador, se activa el game over
+                        game_over()  # Llama a la función para administrar el game over
                     matriz_juego[fila][columna] = 0
                     matriz_juego[fila][(columna - 1) % cantidad_cuadros_ancho] = 3
         else:  # Si el enemigo no ve al jugador, se mueve aleatoriamente
@@ -373,13 +442,17 @@ def movimiento_enemigos():
                 hacia = choice([-1, 1])
                 if se_modifica == "fila":
                     nueva_fila = (fila + hacia) % len(matriz_juego)
-                    if matriz_juego[nueva_fila][columna] not in [1, 2, 3, 5, 6, 7]:
+                    if matriz_juego[nueva_fila][columna] not in [1, 3, 5, 6, 7]:
+                        if matriz_juego[nueva_fila][columna] == 2:
+                            game_over()
                         matriz_juego[fila][columna] = 0
                         matriz_juego[nueva_fila][columna] = 3
                         no_movimiento = False
                 else:
                     nueva_col = (columna + hacia) % len(matriz_juego[0])
-                    if matriz_juego[fila][nueva_col] not in [1, 2, 3, 5, 6, 7]:
+                    if matriz_juego[fila][nueva_col] not in [1, 3, 5, 6, 7]:
+                        if matriz_juego[fila][nueva_col] == 2:
+                            game_over()  # Si el enemigo se mueve a la posición del jugador, se activa el game over
                         matriz_juego[fila][columna] = 0
                         matriz_juego[fila][nueva_col] = 3
                         no_movimiento = False
@@ -393,6 +466,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             # Tocar un enemigo
             if matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] == 3:
                 matriz_juego[player_pos[0]][player_pos[1]] = 0  # Elimina al jugador de la matriz
+                game_over()  # Llama a la función para administrar el game over
                 return # Se acaba la ejecucción de la función, ya que el jugador ha muerto
             
             # Ganar el nivel
@@ -418,6 +492,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             # Tocar un enemigo
             if matriz_juego[(player_pos[0] + 1) % cantidad_cuadros_alto][player_pos[1]] == 3:
                 matriz_juego[player_pos[0]][player_pos[1]] = 0  # Elimina al jugador de la matriz
+                game_over()  # Llama a la función para administrar el game over
                 return # Se acaba la ejecucción de la función, ya que el jugador ha muerto
             
             # Ganar el nivel
@@ -443,6 +518,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             # Tocar un enemigo
             if matriz_juego[player_pos[0]][(player_pos[1] - 1) % cantidad_cuadros_ancho] == 3:
                 matriz_juego[player_pos[0]][player_pos[1]] = 0  # Elimina al jugador de la matriz
+                game_over()  # Llama a la función para administrar el game over
                 return # Se acaba la ejecucción de la función, ya que el jugador ha muerto
             
             # Ganar el nivel
@@ -468,6 +544,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
              # Tocar un enemigo
             if matriz_juego[player_pos[0]][(player_pos[1] + 1) % cantidad_cuadros_ancho] == 3:
                 matriz_juego[player_pos[0]][player_pos[1]] = 0  # Elimina al jugador de la matriz
+                game_over()  # Llama a la función para administrar el game over
                 return # Se acaba la ejecucción de la función, ya que el jugador ha muerto
             
             # Ganar el nivel
@@ -536,9 +613,7 @@ def administrar_disparo():
 while running:
     if not menu_activo and not selector_activo:  # Si no se está en el menú ni en el selector de nivel, se busca la posición del jugador
         player_pos = obtener_coords_jugador()  # Obtiene las coordenadas del jugador
-        if player_pos is None:  # Si no se encuentra el jugador, se termina el juego
-            game_over_activo = True  # Se activa la variable de game over
-
+            
     # Si el evento detectado es QUIT, se deja de correr el juego
     for evento in event.get():
         if evento.type == QUIT:
@@ -558,12 +633,14 @@ while running:
             elif evento.key == K_RIGHT and selector_activo:  # Si se presiona la tecla derecha, se cambia al siguiente nivel
                 # Aquí se puede agregar la lógica para cambiar al nivel anterior
                 print("Cambiando al siguiente nivel")
-                cambio_nivel(+1)
+                cambio_nivel(1)
 
             elif evento.key == K_RETURN and selector_activo:  # Si se presiona la tecla ENTER, se inicia el juego
                 if verificar_validez_nivel(indi_nivel_seleccionado):  # Verifica si el nivel que se va a cargar es válido
                     selector_activo = False  # Se desactiva el selector de nivel
+                    guardados = deepcopy(guardados_sin_modificar)  # Reinicia los guardados a los originales, para que no se modifiquen al iniciar el juego
                     matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
+                    añadir_enemigos_a_matriz(matriz_juego, cantidad_enemigos_nivel)  # Añade los enemigos a la matriz del nivel seleccionado
 
             elif not player_pos is None and not sniping and not menu_activo and not selector_activo:  # Si el jugador no es None y no se está en otro modo, se revisa si se presionan las teclas
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
@@ -583,10 +660,14 @@ while running:
             if evento.key == K_SPACE and not mostrando_disparo and not menu_activo:  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
                     sniping = False
             
-            if evento.key == K_ESCAPE:  # Si se presiona la tecla ESCAPE, se vuelve al menú
-                if not menu_activo:  # Si no se está en el menú, se vuelve al menú
+            if evento.key == K_ESCAPE:  
+                # Si se presiona la tecla ESCAPE, se vuelve al menú
+                if not menu_activo and not selector_activo and not ganar_juego_activo and not pasando_nivel_activo:  # Si no se está en el menú, se vuelve al menú
                     menu_activo = True  # Se activa el menú
                     selector_activo = False  # Se desactiva el selector de nivel
+                    guardados = deepcopy(guardados_sin_modificar)  # Se reinicia la lista de guardados a su estado original
+                    print(guardados)  # Imprime la lista de guardados para verificar que se reinició correctamente
+                    print(guardados_sin_modificar)  # Imprime la lista de guardados sin modificar para verificar que se reinició correctamente
                     
         elif evento.type == MOUSEBUTTONDOWN and not player_pos is None:  # Si se presiona el cursor, se revisa si se hizo click a un enemigo
             if not sniping:  # Si no se está en modo de disparo, se revisa si se hizo click en un enemigo
@@ -610,12 +691,22 @@ while running:
             
     if tiempo_pasando_nivel is not None and time.get_ticks() - tiempo_pasando_nivel >= tiempo_mostrar_pantallas:  # Si se está pasando de nivel, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el paso de nivel
         pasando_nivel_activo = False  # Se desactiva el paso de nivel
+        tiempo_pasando_nivel = None  # Se reinicia el tiempo de cuando se pasó de nivel
+
+    if tiempo_ganar_juego is not None and time.get_ticks() - tiempo_ganar_juego >= tiempo_mostrar_pantallas:  # Si se está ganando el juego, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el mensaje de victoria
+        ganar_juego_activo = False  # Se desactiva el mensaje de victoria
+        menu_activo = True  # Se activa el menú
+        tiempo_ganar_juego = None  # Se reinicia el tiempo de cuando se ganó el juego
+
+    if tiempo_game_over is not None and time.get_ticks() - tiempo_game_over >= tiempo_mostrar_pantallas:  # Si se está en el game over, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el game over
+        game_over_activo = False  # Se desactiva el game over
+        tiempo_game_over = None  # Se reinicia el tiempo de cuando se pasó el game over
 
     # flip() the display to put your work on screen
     display.flip()
 
     # Llama a las respectivas funciones de dibujo, según el estado del juego
-    if menu_activo :  # Si se está en el menú, se dibuja el menú
+    if menu_activo:  # Si se está en el menú, se dibuja el menú
         dibujar_menu()
     elif selector_activo:  # Si se está en el selector de nivel, se dibuja el selector de nivel
         dibujar_menu_seleccion_nivel()
@@ -623,6 +714,8 @@ while running:
         dibujar_paso_de_nivel()
     elif game_over_activo:  # Si se está en el game over, se dibuja el game over
         dibujar_game_over()
+    elif ganar_juego_activo:  # Si se ha ganado el juego, se dibuja el mensaje de victoria
+        dibujar_ganar_juego()
 
     elif not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
         dibujar_matriz(matriz_juego)
@@ -631,7 +724,7 @@ while running:
         sniping_mode(mouse.get_pos(), disparo)
     elif sniping:  # Si está en modo de disparo, se dibuja la matriz de disparo
         sniping_mode(mouse.get_pos())
-    if not menu_activo and not selector_activo and not pasando_nivel_activo:  # Si no se está en alguna otra pantalla, se dibuja el HUD
+    if not menu_activo and not selector_activo and not pasando_nivel_activo and not ganar_juego_activo and not game_over_activo:  # Si no se está en alguna otra pantalla, se dibuja el HUD
         dibujar_hud()
 
     # Usa time.Clock() y la variable dt para limitar la tasa de refresco a 60 FPS
