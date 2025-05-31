@@ -78,6 +78,7 @@ menu_activo = True  # Variable para controlar si se está en el menú o no
 selector_activo = False  # Variable para controlar si se está en el selector de nivel o no
 pasando_nivel_activo = False  # Variable para controlar si se está pasando de nivel o no
 game_over_activo = False  # Variable para controlar si se está en el game over o no
+ganar_juego_activo = False  # Variable para controlar si se ha ganado el juego o no
 
 # Variables para controlar el disparo
 sniping = False  # Variable para controlar el modo de disparo
@@ -210,13 +211,49 @@ def dibujar_matriz(matriz):
             elif matriz[fila][columna] == 7:
                 draw.rect(pantalla, "yellow", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
 
+def paso_de_nivel():  # Esta función se encarga de pasar al siguiente nivel
+    global indi_nivel_seleccionado, matriz_juego, pasando_nivel_activo, tiempo_pasando_nivel, ganar_juego_activo, cantidad_disparos
+    
+    pasando_nivel_activo = True  # Activa la variable para pasar al siguiente nivel
+    tiempo_pasando_nivel = time.get_ticks()  # Guarda el tiempo de inicio del paso de nivel
+    cantidad_disparos = 5  # Reinicia la cantidad de disparos a 5 al pasar de nivel
+
+    cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
+    while not verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel no es válido, se cambia al siguiente nivel
+        cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
+        if cambio_nivel == len(guardados):
+            ganar_juego_activo = True  # Si se llega al último nivel, se activa la variable de ganar el juego
+            pasando_nivel_activo = False  # Si se llega al último nivel, se activa la variable de ganar el juego
+    matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
+
+
 def dibujar_paso_de_nivel():  # Esta función se encarga de pasar al siguiente nivel
-    global indi_nivel_seleccionado
     pantalla.fill("black")
+    # Letras para el mensaje de éxito y el paso de nivel
+    mensaje_exito = fuente_texto.render("¡Felicidades! Pasaste de nivel", False, "white")
+    nivel_a_pasar = fuente_texto.render(f"Pasando al nivel {indi_nivel_seleccionado + 1}", False, "gray")
+
+    # Se pone el título y las instrucciones en la pantalla, centradas 
+    # Nos ubicamos en la mitad (ancho // 2) y restamos la mitad del ancho del texto para centrarlo: esto se hace con todas las intstrucciones
+    pantalla.blit(mensaje_exito, ((ancho // 2) - mensaje_exito.get_width() // 2, 50)) 
+    pantalla.blit(nivel_a_pasar, ((ancho // 2) - nivel_a_pasar.get_width() // 2, 100))  
+
+    # Se hace igual con el gorro, que funciona como elemento decorativo
+    pantalla.blit(gorro_seleccion, ((ancho // 2) - gorro_seleccion.get_width() // 2, 300)) 
+
+
+def dibujar_ganar_juego():  # Esta función se encarga de mostrar el mensaje de victoria al jugador
+    global indi_nivel_seleccionado, matriz_juego
+    pantalla.fill("black")
+    cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
 
     # Letras para el título y las instrucciones
-    mensaje_exito = fuente_texto.render("¡Felicidades! Pasaste de nivel", False, "white")
-    nivel_a_pasar = fuente_texto.render(f"Pasando al nivel {indi_nivel_seleccionado}", False, "gray")
+    mensaje_exito = fuente_texto.render("¡Felicidades! Lograste terminar el juego", False, "white")
+
+    while not verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel no es válido, se cambia al siguiente nivel
+        cambio_nivel(indi_nivel_seleccionado + 1)  # Cambia al siguiente nivel
+    matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
+    nivel_a_pasar = fuente_texto.render(f"Pasando al nivel {indi_nivel_seleccionado + 1}", False, "gray")
 
     # Se pone el título y las instrucciones en la pantalla, centradas 
     # Nos ubicamos en la mitad (ancho // 2) y restamos la mitad del ancho del texto para centrarlo: esto se hace con todas las intstrucciones
@@ -224,14 +261,7 @@ def dibujar_paso_de_nivel():  # Esta función se encarga de pasar al siguiente n
     pantalla.blit(nivel_a_pasar, ((ancho // 2) - nivel_a_pasar.get_width() // 2, 100))  
 
 
-    # Se hace igual con el gorro, que funciona como elemento decorativo
-    pantalla.blit(gorro_seleccion, ((ancho // 2) - gorro_seleccion.get_width() // 2, 300)) 
-
-    if not verificar_validez_nivel(indi_nivel_seleccionado):
-        texto_error = fuente_texto.render("Nivel inválido", False, "red")
-        pantalla.blit(texto_error, ((ancho // 2) - texto_error.get_width() // 2, 250))  # Se pone el texto de error si el nivel no es válido
-
-def game_over():
+def dibujar_game_over():
     print("GAME OVER, el jugador ha muerto")  # Aquí se puede agregar la lógica para el game over, como reiniciar el juego o mostrar un mensaje
 
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
@@ -356,7 +386,7 @@ def movimiento_enemigos():
 
 
 def administrar_movimiento_jugador(direccion):  # Esta función administra el movimiento del jugador
-    global player_pos, matriz_juego, cantidad_cuadros_alto, cantidad_cuadros_ancho,pasando_nivel_activo
+    global player_pos, matriz_juego, cantidad_cuadros_alto, cantidad_cuadros_ancho,pasando_nivel_activo, tiempo_pasando_nivel
     # Movimiento hacia arriba
     if direccion == "arriba":
         if matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] != 1: # Revisa si no hay pared
@@ -367,8 +397,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             
             # Ganar el nivel
             elif matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] == 7:
-                dibujar_paso_de_nivel()  # Llama a la función para pasar al siguiente nivel
-                pasando_nivel_activo = True  # Activa la variable para pasar al siguiente nivel
+                paso_de_nivel()  # Llama a la función para pasar configurar el paso de nivel
                 return # Se acaba la ejecucción de la función, ya ganó el nivel
 
             # Salida del escondite anterior
@@ -393,8 +422,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             
             # Ganar el nivel
             if matriz_juego[(player_pos[0] + 1) % cantidad_cuadros_alto][player_pos[1]] == 7:
-                dibujar_paso_de_nivel()  # Llama a la función para pasar al siguiente nivel
-                pasando_nivel_activo = True  # Activa la variable para pasar al siguiente nivel
+                paso_de_nivel()  # Llama a la función para pasar configurar el paso de nivel
                 return # Se acaba la ejecucción de la función, ya ganó el nivel
             
             # Salida del escondite anterior
@@ -419,8 +447,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             
             # Ganar el nivel
             if matriz_juego[player_pos[0]][(player_pos[1] - 1) % cantidad_cuadros_ancho] == 7:
-                dibujar_paso_de_nivel()  # Llama a la función para pasar al siguiente nivel
-                pasando_nivel_activo = True  # Activa la variable para pasar al siguiente nivel
+                paso_de_nivel()  # Llama a la función para pasar configurar el paso de nivel
                 return # Se acaba la ejecucción de la función, ya ganó el nivel
 
             # Salida del escondite anterior
@@ -445,8 +472,7 @@ def administrar_movimiento_jugador(direccion):  # Esta función administra el mo
             
             # Ganar el nivel
             if matriz_juego[player_pos[0]][(player_pos[1] + 1) % cantidad_cuadros_ancho] == 7:
-                dibujar_paso_de_nivel()  # Llama a la función para pasar al siguiente nivel
-                pasando_nivel_activo = True  # Activa la variable para pasar al siguiente nivel
+                paso_de_nivel()  # Llama a la función para pasar configurar el paso de nivel
                 return # Se acaba la ejecucción de la función, ya ganó el nivel
             
             # Salida del escondite anterior
@@ -489,7 +515,7 @@ def cursor_en_pos_valida(cursor_pos, matriz):
     return None  # Si la posición no está dentro de la matriz, se devuelve None
 
 def administrar_disparo():
-    global disparo, cantidad_disparos, mostrando_disparo, tiempo_disparo, matriz_disparo, coords_enemigo_eliminar, matriz_prueba
+    global disparo, cantidad_disparos, mostrando_disparo, tiempo_disparo, matriz_disparo, coords_enemigo_eliminar, matriz_juego
     disparo = True  # Se activa la variable de disparo (esto detiene la rotación de la mira)
     cantidad_disparos -= 1  # Se resta 1 al contador de disparos
     mostrando_disparo = True  # Se activa la variable para mostrar el disparo
@@ -503,12 +529,8 @@ def administrar_disparo():
         cantidad_disparos += 1  # Se suma 1 al contador de disparos, ya que no se disparó
     elif cursor_en_pos_valida(mouse.get_pos(), matriz_disparo) == True:
         # Si el disparo es válido, se elimina el enemigo al que se le hizo click
-        matriz_prueba[coords_enemigo_eliminar[1]][coords_enemigo_eliminar[0]] = 0
+        matriz_juego[coords_enemigo_eliminar[1]][coords_enemigo_eliminar[0]] = 0
         limpiar_vision_enemigos()  # Llama a la función para eliminar los restos del área de visión del enemigo eliminado
-
-
-            
-
 
 # Bucle que corre el juego mientras running sea True
 while running:
@@ -586,7 +608,8 @@ while running:
         mostrando_disparo = False  # Se desactiva la variable para mostrar el disparo
         tiempo_disparo = None  # Se reinicia el tiempo de cuando se disparó
             
-    if tiempo
+    if tiempo_pasando_nivel is not None and time.get_ticks() - tiempo_pasando_nivel >= tiempo_mostrar_pantallas:  # Si se está pasando de nivel, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el paso de nivel
+        pasando_nivel_activo = False  # Se desactiva el paso de nivel
 
     # flip() the display to put your work on screen
     display.flip()
@@ -599,7 +622,7 @@ while running:
     elif pasando_nivel_activo:  # Si se está pasando de nivel, se dibuja el paso de nivel
         dibujar_paso_de_nivel()
     elif game_over_activo:  # Si se está en el game over, se dibuja el game over
-        game_over()
+        dibujar_game_over()
 
     elif not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
         dibujar_matriz(matriz_juego)
@@ -608,7 +631,7 @@ while running:
         sniping_mode(mouse.get_pos(), disparo)
     elif sniping:  # Si está en modo de disparo, se dibuja la matriz de disparo
         sniping_mode(mouse.get_pos())
-    if not menu_activo and not selector_activo:  # Si no se está en el menú, se dibuja el HUD
+    if not menu_activo and not selector_activo and not pasando_nivel_activo:  # Si no se está en alguna otra pantalla, se dibuja el HUD
         dibujar_hud()
 
     # Usa time.Clock() y la variable dt para limitar la tasa de refresco a 60 FPS
