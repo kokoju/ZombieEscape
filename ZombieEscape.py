@@ -21,31 +21,7 @@ def leer_archivo(path):
         archivo.close()
         return contenido
 
-
-matriz_prueba = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 5, 5, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
-
-# En estas casillas, tendremos la siguiente información:
+# Tendremos la siguiente información:
 # 0 = vacío
 # 1 = pared
 # 2 = jugador
@@ -83,11 +59,6 @@ def generador_matriz_aleatoria():
     return matriz
 
 
-
-
-alto_matriz = len(matriz_prueba)  # largo de la matriz
-ancho_matriz = len(matriz_prueba[0])  # ancho de la matriz
-
 # Configuración de la ventana 
 init()
 pantalla = display.set_mode((ancho, alto))  # Configura la ventana
@@ -115,6 +86,8 @@ tiempo_disparo= None # Variable para controlar el tiempo transcurrido desde el d
 tiempo_mostrar_disparo = 2000 # Variable para controlar cuanto tiempo se muestra el disparo, antes de volver al juego (en milisegundos)
 cantidad_disparos = 5 # Variable para controlar la cantidad de disparos disponibles
 coords_enemigo_eliminar = None  # Variable para guardar las coordenadas del enemigo que se quiere elminar
+matriz_juego = None  # Variable para guardar la matriz del juego, que se establecerá al seleccionar un nivel
+player_pos = None  # Variable para guardar las coordenadas del jugador, que se establecerá al seleccionar un nivel
 
 # ==================================================================================================================
 #   SET DE IMÁGENES UTILIZADAS Y TEXTO
@@ -122,50 +95,71 @@ coords_enemigo_eliminar = None  # Variable para guardar las coordenadas del enem
 mira = image.load("assets/CirculoMira.png")  # Carga la imagen de la mira
 imagen_inicio = image.load("assets/ImagenMago.png")  # Carga la imagen de inicio
 icono_municion = image.load("assets/IconoMunicion.png")  # Carga el icono de munición
+gorro_seleccion = image.load("assets/GorroSeleccion.png")  # Carga el icono de selección de nivel
 
 # ==================================================================================================================
 #   FUNCIONES DEL JUEGO (DIBUJO Y MECÁNICAS)
 # ==================================================================================================================
 
-def verificar_validez_nivel():  # Esta función verifica si el nivel es válido
+def verificar_validez_nivel(indi_nivel):  # Esta función verifica si el nivel es válido
     global guardados, cantidad_cuadros_ancho, cantidad_cuadros_alto
-    niveles_validos = []  # Lista para guardar los niveles válidos
     tiene_1_solo_jugador = False  # Variable para verificar si hay un solo jugador en el nivel
     tiene_1_sola_salida = False  # Variable para verificar si hay una sola salida en el nivel
-    for niveles in guardados:
-        if len(niveles) != cantidad_cuadros_alto or len(niveles[0]) != cantidad_cuadros_ancho:  # Revisa si el nivel tiene el tamaño correcto
-            continue
-        for fila in range(len(niveles)):
-            for columna in range(len(niveles[0])):
-                if niveles[fila][columna] == 2 and not tiene_1_solo_jugador:  # Revisa si hay un jugador
-                    tiene_1_solo_jugador = True  # Si hay un jugador, se cambia la variable a True
-                elif niveles[fila][columna] == 2 and tiene_1_solo_jugador:
-                    tiene_1_solo_jugador = False
-                    break
-                if niveles[fila][columna] == 7 and not tiene_1_sola_salida:  # Revisa si hay una salida
-                    tiene_1_sola_salida = True  # Si hay una salida, se cambia la variable a True
-                elif niveles[fila][columna] == 7 and tiene_1_sola_salida:
-                    tiene_1_sola_salida = False
-                    break
-        if tiene_1_solo_jugador and tiene_1_sola_salida:  # Si hay un solo jugador y una sola salida, el nivel es válido
-            niveles_validos.append(niveles)  # Se agrega el nivel a la lista de niveles válidos
-    return niveles_validos  # Devuelve la lista de niveles válidos
+    for fila in range(len(guardados[indi_nivel])):
+        if len(guardados[indi_nivel][fila]) != cantidad_cuadros_ancho:  # Revisa si la fila tiene la cantidad de columnas correcta
+            break  # Si no tiene la cantidad de columnas correcta, se salta el nivel
+        for columna in range(len(guardados[indi_nivel][fila])):
+            if guardados[indi_nivel][fila][columna] == 2 and not tiene_1_solo_jugador:  # Revisa si hay un jugador
+                tiene_1_solo_jugador = True  # Si hay un jugador, se cambia la variable a True
+            elif guardados[indi_nivel][fila][columna] == 2 and tiene_1_solo_jugador:
+                tiene_1_solo_jugador = False
+                break
+            if guardados[indi_nivel][fila][columna] == 7 and not tiene_1_sola_salida:  # Revisa si hay una salida
+                tiene_1_sola_salida = True  # Si hay una salida, se cambia la variable a True
+            elif guardados[indi_nivel][fila][columna] == 7 and tiene_1_sola_salida:
+                tiene_1_sola_salida = False
+                break
+    
+    if tiene_1_solo_jugador and tiene_1_sola_salida:  # Si hay un solo jugador y una sola salida, el nivel es válido
+        return True 
+    return False # Si no, el nivel no es válido
 
+indi_nivel_seleccionado = 0  # Nivel seleccionado por el jugador
 
 def menu():  # Esta función muestra el menú principal del juego
     pantalla.blit(imagen_inicio, (0, 0))  # Pone la imágen de inicio en la pantalla
 
 
-def menu_seleccion_nivel():  # Esta función muestra la selección de nivel del juego
-    pantalla.fill("black")  # Limpia la pantalla
-    pantalla.blit(fuente_texto.render("Selector de nivel", False, "white"), ((ancho// 2) - 170, 50))  # Muestra el texto de selección de nivel
-    pantalla.blit(fuente_texto.render("Presiona las flechas para cambiar de nivel", False, "white"), ((ancho// 2) - 400, 100))  # Muestra el texto de instrucciones
+def menu_seleccion_nivel():
+    global indi_nivel_seleccionado
+    pantalla.fill("black")
+
+    # Letras para el título y las instrucciones
+    titulo = fuente_texto.render("Selector de nivel", False, "white")
+    instrucciones = fuente_texto.render("<- / -> para cambiar de nivel", False, "gray")
+    confirmar = fuente_texto.render("Enter para jugar", False, "gray")
+
+    # Se pone el título y las instrucciones en la pantalla, centradas 
+    # Nos ubicamos en la mitad (ancho // 2) y restamos la mitad del ancho del texto para centrarlo: esto se hace con todas las intstrucciones
+    pantalla.blit(titulo, ((ancho // 2) - titulo.get_width() // 2, 50)) 
+    pantalla.blit(instrucciones, ((ancho // 2) - instrucciones.get_width() // 2, 100))  
+    pantalla.blit(confirmar, ((ancho // 2) - confirmar.get_width() // 2, 400))
+
+    # Se hace igual con el gorro, que funciona como elemento decorativo
+    pantalla.blit(gorro_seleccion, ((ancho // 2) - gorro_seleccion.get_width() // 2, 300)) 
+
+    # Texto del nivel seleccionado y los niveles que hay disponibles
+    texto_nivel = fuente_texto.render(f"Nivel {indi_nivel_seleccionado + 1} de {len(guardados)}", False, "green" if verificar_validez_nivel(indi_nivel_seleccionado) else "red")  # Se pone el texto del nivel seleccionado, con color verde si es válido y rojo si no lo es
+    pantalla.blit(texto_nivel, ((ancho // 2) - texto_nivel.get_width() // 2, 200))
+
+    if not verificar_validez_nivel(indi_nivel_seleccionado):
+        texto_error = fuente_texto.render("Nivel inválido", False, "red")
+        pantalla.blit(texto_error, ((ancho // 2) - texto_error.get_width() // 2, 250))  # Se pone el texto de error si el nivel no es válido
 
 
-def cambio_nivel():  # Esta función cambia el nivel del juego
-    pass    
-
-
+def cambio_nivel(nivel):  # Esta función cambia el nivel del juego
+    global indi_nivel_seleccionado
+    indi_nivel_seleccionado = (indi_nivel_seleccionado + nivel) % len(guardados)  # Cambia el nivel seleccionado a uno de la lista de niveles válidos
 
 
 def dibujar_hud():  # Esta función muestra el HUD del juego
@@ -177,121 +171,123 @@ def dibujar_hud():  # Esta función muestra el HUD del juego
 
 
 def obtener_coords_jugador(): # Esta función obtiene las coordenadas del jugador en la matriz
-    for fila in range(len(matriz_prueba)):
-        for columna in range(len(matriz_prueba[fila])):
-            if matriz_prueba[fila][columna] == 2 or matriz_prueba[fila][columna] == 6:  # Revisa si hay un jugador o un escondite usado
+    global matriz_juego
+    for fila in range(len(matriz_juego)):
+        for columna in range(len(matriz_juego[fila])):
+            if matriz_juego[fila][columna] == 2 or matriz_juego[fila][columna] == 6:  # Revisa si hay un jugador o un escondite usado
                 return fila, columna
     return None  # Si no se encuentra el jugador, devuelve None
 
 def limpiar_vision_enemigos():  # Esta función calcula la visión de los enemigos en la matriz
+    global matriz_juego
     # Se recorre la matriz y se borra todos los elementos de visión (4)
-    for fila in range(len(matriz_prueba)):
-        for columna in range(len(matriz_prueba[fila])):
-            if matriz_prueba[fila][columna] == 4:
-                matriz_prueba[fila][columna] = 0
+    for fila in range(len(matriz_juego)):
+        for columna in range(len(matriz_juego[fila])):
+            if matriz_juego[fila][columna] == 4:
+                matriz_juego[fila][columna] = 0
 
 rango_vision = 5  # Rango de visión del enemigo
 
 def enemigo_ve_jugador(fila, columna):  # Función que toma las coordenadas del enemigo y revisa si ve al jugador
-    global rango_vision
+    global rango_vision, matriz_juego
     # Revisa línea recta en las 4 direcciones
     for direccion_x in [-1, 1]:  # Se revisa arriba y abajo
         for i in range(1, rango_vision + 1):  # Se revisa hasta el rango de visión, iniciando desde 1 para no contar la posición del enemigo
             x, y = fila + direccion_x* i, columna  # Se suman las direcciones a las coordeandas a revisar
-            if not (0 <= x < len(matriz_prueba) and 0 <= y < len(matriz_prueba[0])):  # Revisa si está dentro de la matriz 
+            if not (0 <= x < len(matriz_juego) and 0 <= y < len(matriz_juego[0])):  # Revisa si está dentro de la matriz 
                 break  # Se sale de la matriz
-            if matriz_prueba[x][y] == 1:
+            if matriz_juego[x][y] == 1:
                 break  # Pared
-            if matriz_prueba[x][y] == 2:
+            if matriz_juego[x][y] == 2:
                 return True  # Jugador encontrado
             
     for direccion_y in [-1, 1]:  # Se revisa izquierda y derecha
         for j in range(1, rango_vision + 1):  # Se revisa hasta el rango de visión, iniciando desde 1 para no contar la posición del enemigo
             x, y = fila , columna + direccion_y*j  # Se suman las direcciones a las coordeandas a revisar
-            if not (0 <= x < len(matriz_prueba) and 0 <= y < len(matriz_prueba[0])):  # Revisa si está dentro de la matriz 
+            if not (0 <= x < len(matriz_juego) and 0 <= y < len(matriz_juego[0])):  # Revisa si está dentro de la matriz 
                 break  # Se sale de la matriz
-            if matriz_prueba[x][y] == 1:
+            if matriz_juego[x][y] == 1:
                 break  # Pared
-            if matriz_prueba[x][y] == 2:
+            if matriz_juego[x][y] == 2:
                 return True  # Jugador encontrado
     return False
 
 
 def vision_enemigos():
-    global rango_vision
-    for fila in range(len(matriz_prueba)):
-        for columna in range(len(matriz_prueba[fila])):
-            if matriz_prueba[fila][columna] == 3:
+    global rango_vision, matriz_juego
+    for fila in range(len(matriz_juego)):
+        for columna in range(len(matriz_juego[fila])):
+            if matriz_juego[fila][columna] == 3:
                 # Para la visión del enemigo, se crean variables para las coordenadas de la matriz y se revisa en todos las direcciones, en forma de cruz
                 A = 1  # Arriba
                 B = 1  # Abajo
                 I = 1  # Izquierda
                 D = 1  # Derecha
                 # Mientras subamos y no haya un elemento prohibido, se crea el area de visión
-                while (fila - A) >= 0 and matriz_prueba[fila - A][columna] not in [1, 2, 3, 5, 6, 7] and A <= rango_vision:  
-                    matriz_prueba[fila - A][columna] = 4
+                while (fila - A) >= 0 and matriz_juego[fila - A][columna] not in [1, 2, 3, 5, 6, 7] and A <= rango_vision:  
+                    matriz_juego[fila - A][columna] = 4
                     A += 1
-                while (fila + B) < len(matriz_prueba) and matriz_prueba[fila + B][columna] not in [1, 2, 3, 5, 6, 7] and B <= rango_vision:
-                    matriz_prueba[fila + B][columna] = 4
+                while (fila + B) < len(matriz_juego) and matriz_juego[fila + B][columna] not in [1, 2, 3, 5, 6, 7] and B <= rango_vision:
+                    matriz_juego[fila + B][columna] = 4
                     B += 1
-                while (columna - I) >= 0 and matriz_prueba[fila][columna - I] not in [1, 2, 3, 5, 6, 7] and I <= rango_vision:
-                    matriz_prueba[fila][columna - I] = 4
+                while (columna - I) >= 0 and matriz_juego[fila][columna - I] not in [1, 2, 3, 5, 6, 7] and I <= rango_vision:
+                    matriz_juego[fila][columna - I] = 4
                     I += 1
-                while (columna + D) < len(matriz_prueba[fila]) and matriz_prueba[fila][columna + D] not in [1, 2, 3, 5, 6, 7] and D <= rango_vision:
-                    matriz_prueba[fila][columna + D] = 4
+                while (columna + D) < len(matriz_juego[fila]) and matriz_juego[fila][columna + D] not in [1, 2, 3, 5, 6, 7] and D <= rango_vision:
+                    matriz_juego[fila][columna + D] = 4
                     D += 1
 
 
 def movimiento_enemigos():
-    global alto_matriz, ancho_matriz
+    global matriz_juego, cantidad_cuadros_alto, cantidad_cuadros_ancho
     limpiar_vision_enemigos()  # Limpia la visión de los enemigos
 
     # Lista de enemigos a procesar: esto ya que un enemigo puede moverse a la una posición que no ha sido revisada, y por lo tanto, se vuelve a mover
     enemigos_originales = []  # Para evitar esto, se guardan las posiciones originales de los enemigos
-    for fila in range(len(matriz_prueba)):
-        for columna in range(len(matriz_prueba[fila])):
-            if matriz_prueba[fila][columna] == 3:
+    for fila in range(len(matriz_juego)):
+        for columna in range(len(matriz_juego[fila])):
+            if matriz_juego[fila][columna] == 3:
                 enemigos_originales.append((fila, columna))
 
     for fila, columna in enemigos_originales:
-        if matriz_prueba[fila][columna] != 3:
+        if matriz_juego[fila][columna] != 3:
             continue  # Ya se movió desde otra casilla, no pasa nada
         
         # Si en las coordenadas anotadas sigue habiendo un 3, significa que hay un enemigo que no se ha movido, por lo que se sigue con su movimiento
         elif enemigo_ve_jugador(fila, columna):  # Si el enemigo ve al jugador, se mueve hacia él
             player_pos = obtener_coords_jugador()
             if fila < player_pos[0]:  # El jugador se encuntra abajo del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[(fila + 1) % alto_matriz][columna] not in [1, 2, 3, 5, 6, 7]:
-                    matriz_prueba[fila][columna] = 0
-                    matriz_prueba[(fila + 1) % alto_matriz][columna] = 3
+                if matriz_juego[(fila + 1) % cantidad_cuadros_alto][columna] not in [1, 2, 3, 5, 6, 7]:
+                    matriz_juego[fila][columna] = 0
+                    matriz_juego[(fila + 1) % cantidad_cuadros_alto][columna] = 3
             elif fila > player_pos[0]:  # El jugador se encuntra arriba del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[(fila - 1) % alto_matriz][columna] not in [1, 2, 3, 5, 6, 7]:
-                    matriz_prueba[fila][columna] = 0
-                    matriz_prueba[(fila - 1) % alto_matriz][columna] = 3
+                if matriz_juego[(fila - 1) % cantidad_cuadros_alto][columna] not in [1, 2, 3, 5, 6, 7]:
+                    matriz_juego[fila][columna] = 0
+                    matriz_juego[(fila - 1) % cantidad_cuadros_alto][columna] = 3
             elif columna < player_pos[1]:  # El jugador se encuntra a la derecha del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[fila][(columna + 1) % ancho_matriz] not in [1, 2, 3, 5, 6, 7]:
-                    matriz_prueba[fila][columna] = 0
-                    matriz_prueba[fila][(columna + 1) % ancho_matriz] = 3
+                if matriz_juego[fila][(columna + 1) % cantidad_cuadros_ancho] not in [1, 2, 3, 5, 6, 7]:
+                    matriz_juego[fila][columna] = 0
+                    matriz_juego[fila][(columna + 1) % cantidad_cuadros_ancho] = 3
             elif columna > player_pos[1]:  # El jugador se encuntra a la izquierda del enemigo, por lo que el enemigo se mueve hacia él
-                if matriz_prueba[fila][(columna - 1) % ancho_matriz] not in [1, 2, 3, 5, 6, 7]:  # Revisa si no hay pared o enemigo
-                    matriz_prueba[fila][columna] = 0
-                    matriz_prueba[fila][(columna - 1) % ancho_matriz] = 3
+                if matriz_juego[fila][(columna - 1) % cantidad_cuadros_ancho] not in [1, 2, 3, 5, 6, 7]:  # Revisa si no hay pared o enemigo
+                    matriz_juego[fila][columna] = 0
+                    matriz_juego[fila][(columna - 1) % cantidad_cuadros_ancho] = 3
         else:  # Si el enemigo no ve al jugador, se mueve aleatoriamente
             no_movimiento = True
             while no_movimiento:  # Se usa este bucle para evitar que el enemigo no pueda moverse: si las coordeandas random son inválidas, se vuelve a elegir
                 se_modifica = choice(["fila", "columna"])
                 hacia = choice([-1, 1])
                 if se_modifica == "fila":
-                    nueva_fila = (fila + hacia) % len(matriz_prueba)
-                    if matriz_prueba[nueva_fila][columna] not in [1, 2, 3, 5, 6, 7]:
-                        matriz_prueba[fila][columna] = 0
-                        matriz_prueba[nueva_fila][columna] = 3
+                    nueva_fila = (fila + hacia) % len(matriz_juego)
+                    if matriz_juego[nueva_fila][columna] not in [1, 2, 3, 5, 6, 7]:
+                        matriz_juego[fila][columna] = 0
+                        matriz_juego[nueva_fila][columna] = 3
                         no_movimiento = False
                 else:
-                    nueva_col = (columna + hacia) % len(matriz_prueba[0])
-                    if matriz_prueba[fila][nueva_col] not in [1, 2, 3, 5, 6, 7]:
-                        matriz_prueba[fila][columna] = 0
-                        matriz_prueba[fila][nueva_col] = 3
+                    nueva_col = (columna + hacia) % len(matriz_juego[0])
+                    if matriz_juego[fila][nueva_col] not in [1, 2, 3, 5, 6, 7]:
+                        matriz_juego[fila][columna] = 0
+                        matriz_juego[fila][nueva_col] = 3
                         no_movimiento = False
 
 def sniping_mode(cursor_pos, disparo=False):
@@ -342,7 +338,7 @@ def game_over():
                 
 
 
-def dibujar_matriz(matriz=matriz_prueba):
+def dibujar_matriz(matriz):
     # DISCLAIMER: El código no funciona correctamente con (fila, columna) en las coords, ya que no se dibujaría bien
     # Si se quisiera dibujar lo que sale en (0, 1) en la matriz y dibujamos (0, 1) en pantalla, se dibujaría abajo del la esquina inferior izquierda
     # (ya que no nos movemos horizontalmente y bajamos 1 verticalmente): este cuadro se dibujaría realmente en (1, 0), por lo que se debe hacer (columna, fila)
@@ -378,9 +374,10 @@ def dibujar_matriz(matriz=matriz_prueba):
 
 # Bucle que corre el juego mientras running sea True
 while running:
-    player_pos = obtener_coords_jugador()  # Obtiene las coordenadas del jugador
-    if player_pos is None:  # Si no se encuentra el jugador, se termina el juego
-        game_over()
+    if not menu_activo and not selector_activo:  # Si no se está en el menú ni en el selector de nivel, se busca la posición del jugador
+        player_pos = obtener_coords_jugador()  # Obtiene las coordenadas del jugador
+        if player_pos is None:  # Si no se encuentra el jugador, se termina el juego
+            game_over()
 
     # Si el evento detectado es QUIT, se deja de correr el juego
     for evento in event.get():
@@ -403,68 +400,73 @@ while running:
                 print("Cambiando al siguiente nivel")
                 cambio_nivel(+1)
 
-            elif not player_pos is None and not sniping:  # Si el jugador no es None y no se está en el otro modo, se revisa si se presionan las teclas
+            elif evento.key == K_RETURN and selector_activo:  # Si se presiona la tecla ENTER, se inicia el juego
+                if verificar_validez_nivel(indi_nivel_seleccionado):  # Verifica si el nivel que se va a cargar es válido
+                    selector_activo = False  # Se desactiva el selector de nivel
+                    matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
+
+            elif not player_pos is None and not sniping and not menu_activo and not selector_activo:  # Si el jugador no es None y no se está en otro modo, se revisa si se presionan las teclas
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
                 # Gracias a los alto_matriz y ancho_matriz, se genera un loop si el jugador intenta salir de la pantalla, como PAC-MAN
 
                 # Movimiento hacia arriba
-                if evento.key == K_w and matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
+                if evento.key == K_w and matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
                     # Salida del escondite anterior
-                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    if matriz_juego[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_juego[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
                     else: # Si no estaba en un escondite, se marca la posición como vacía
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_juego[player_pos[0]][player_pos[1]] = 0
 
                     # Entrar a un nuevo escondite
-                    if matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] == 5:
-                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 6 # Se marca el escondite como usado
+                    if matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] == 5:
+                        matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] = 6 # Se marca el escondite como usado
                     else:  # Si no hay escondite, se marca la posición como jugador
-                        matriz_prueba[(player_pos[0] - 1) % alto_matriz][player_pos[1]] = 2
+                        matriz_juego[(player_pos[0] - 1) % cantidad_cuadros_alto][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
                 
                 # Movimiento hacia abajo
-                if evento.key == K_s and matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
+                if evento.key == K_s and matriz_juego[(player_pos[0] + 1) % cantidad_cuadros_alto][player_pos[1]] not in [1, 3]: # Revisa si no hay pared o enemigo
                     # Salida del escondite anterior
-                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    if matriz_juego[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_juego[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
                     else: # Si no estaba en un escondite, se marca la posición como vacía
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_juego[player_pos[0]][player_pos[1]] = 0
 
                     # Entrar a un nuevo escondite
-                    if matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] == 5:
-                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 6 # Se marca el escondite como usado
+                    if matriz_juego[(player_pos[0] + 1) % cantidad_cuadros_alto][player_pos[1]] == 5:
+                        matriz_juego[(player_pos[0] + 1) % cantidad_cuadros_alto][player_pos[1]] = 6 # Se marca el escondite como usado
                     else:  # Si no hay escondite, se marca la posición como jugador
-                        matriz_prueba[(player_pos[0] + 1) % alto_matriz][player_pos[1]] = 2
+                        matriz_juego[(player_pos[0] + 1) % cantidad_cuadros_alto][player_pos[1]] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
-                if evento.key == K_a and matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] not in [1, 3]: # Revisa si no hay pared o enemigo
+                if evento.key == K_a and matriz_juego[player_pos[0]][(player_pos[1] - 1) % cantidad_cuadros_ancho] not in [1, 3]: # Revisa si no hay pared o enemigo
                     # Salida del escondite anterior
-                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    if matriz_juego[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_juego[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
                     else: # Si no estaba en un escondite, se marca la posición como vacía
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_juego[player_pos[0]][player_pos[1]] = 0
 
                     # Entrar a un nuevo escondite
-                    if matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] == 5:
-                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 6 # Se marca el escondite como usado
+                    if matriz_juego[player_pos[0]][(player_pos[1] - 1) % cantidad_cuadros_ancho] == 5:
+                        matriz_juego[player_pos[0]][(player_pos[1] - 1) % cantidad_cuadros_ancho] = 6 # Se marca el escondite como usado
                     else:  # Si no hay escondite, se marca la posición como jugador
-                        matriz_prueba[player_pos[0]][(player_pos[1] - 1) % ancho_matriz] = 2
+                        matriz_juego[player_pos[0]][(player_pos[1] - 1) % cantidad_cuadros_ancho] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
-                if evento.key == K_d and matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] not in [1, 3]:  # Si no hay pared o enemigo
+                if evento.key == K_d and matriz_juego[player_pos[0]][(player_pos[1] + 1) % cantidad_cuadros_ancho] not in [1, 3]:  # Si no hay pared o enemigo
 
                     # Salida del escondite anterior
-                    if matriz_prueba[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
+                    if matriz_juego[player_pos[0]][player_pos[1]] == 6: # Si estaba en un escondite, sale de él
+                        matriz_juego[player_pos[0]][player_pos[1]] = 5  # Se crea el escondite vacío
                     else: # Si no estaba en un escondite, se marca la posición como vacía
-                        matriz_prueba[player_pos[0]][player_pos[1]] = 0
+                        matriz_juego[player_pos[0]][player_pos[1]] = 0
 
                     # Entrar a un nuevo escondite
-                    if matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] == 5:
-                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 6 # Se marca el escondite como usado
+                    if matriz_juego[player_pos[0]][(player_pos[1] + 1) % cantidad_cuadros_ancho] == 5:
+                        matriz_juego[player_pos[0]][(player_pos[1] + 1) % cantidad_cuadros_ancho] = 6 # Se marca el escondite como usado
                     else:  # Si no hay escondite, se marca la posición como jugador
-                        matriz_prueba[player_pos[0]][(player_pos[1] + 1) % ancho_matriz] = 2
+                        matriz_juego[player_pos[0]][(player_pos[1] + 1) % cantidad_cuadros_ancho] = 2
                     movimiento_enemigos()  # Llama a la función para mover los enemigos cada que el jugador se mueve
             
-            if evento.key == K_SPACE and not mostrando_disparo and not menu:  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
+            if evento.key == K_SPACE and not mostrando_disparo and not menu_activo:  # Si se presiona la barra espaciadora, se desactiva el modo de disparo
                     sniping = False
             
             if evento.key == K_ESCAPE:  # Si se presiona la tecla ESCAPE, se vuelve al menú
@@ -477,7 +479,7 @@ while running:
                 x, y = mouse.get_pos()
                 x_en_juego = x // tamaño_cuadro  # Convierte la posición del mouse a coordenadas de la matriz
                 y_en_juego = y // tamaño_cuadro  # Convierte la posición del mouse a coordenadas de la matriz
-                if matriz_prueba[y_en_juego][x_en_juego] == 3 and cursor_en_pos_valida((x, y), matriz_prueba):  # Si se hizo click en un enemigo
+                if matriz_juego[y_en_juego][x_en_juego] == 3 and cursor_en_pos_valida((x, y), matriz_juego):  # Si se hizo click en un enemigo
                     # Se activa el modo sniping
                     sniping = True
                     matriz_disparo = generador_matriz_aleatoria()
@@ -501,7 +503,7 @@ while running:
     elif not menu_activo and selector_activo:  # Si se está en el selector de nivel, se dibuja el selector de nivel
         menu_seleccion_nivel()
     elif not sniping:  # Si no está en modo de disparo, se dibuja la matriz de juego
-        dibujar_matriz()
+        dibujar_matriz(matriz_juego)
     elif sniping and disparo:
         # Si se se disparó, si cambia la rotación de la mira en el modo disparo
         sniping_mode(mouse.get_pos(), disparo)
