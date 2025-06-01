@@ -343,7 +343,7 @@ def ganar_juego():  # Esta función se encarga de ganar el juego
     ganar_juego_activo = True  # Activa la variable de ganar el juego
     guardados = deepcopy(guardados_sin_modificar)  # Reinicia los guardados a los originales, para que no se modifiquen al ganar el juego
     tiempo_ganar_juego = time.get_ticks()  # Guarda el tiempo de inicio del paso de nivel
-    matriz_juego = None  # Reinicia la matriz del juego a None, ya que no se necesita más
+    matriz_juego = guardados[0]  # Reinicia la matriz del juego a None, ya que no se necesita más
 
 def dibujar_ganar_juego():  # Esta función se encarga de mostrar el mensaje de victoria al jugador
     global indi_nivel_seleccionado, matriz_juego
