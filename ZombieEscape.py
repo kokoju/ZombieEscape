@@ -75,7 +75,7 @@ guardados_sin_modificar = deepcopy(guardados) # Copia de los guardados originale
 #   SET DE VARIABLES
 # ==================================================================================================================
 # Variables para controlar el estado del juego
-menu_activo = True  # Variable para controlar si se está en el menú o no
+menu_activo = False  # Variable para controlar si se está en el menú o no
 selector_activo = False  # Variable para controlar si se está en el selector de nivel o no
 pasando_nivel_activo = False  # Variable para controlar si se está pasando de nivel o no
 game_over_activo = False  # Variable para controlar si se está en el game over o no
@@ -89,6 +89,7 @@ matriz_disparo = None  # Guarda la matriz de disparo
 mostrando_disparo = False  # Variable para controlar si se está mostrando el disparo
 cantidad_disparos = 5 # Variable para controlar la cantidad de disparos disponibles
 coords_enemigo_eliminar = None  # Variable para guardar las coordenadas del enemigo que se quiere elminar
+disparo_atinado = False  # Variable para controlar si se ha atinado un disparo
 
 # Varibles para controlar eventos y tiempos
 mostrando_disparo = False  # Variable para controlar si se está mostrando el disparo
@@ -113,8 +114,32 @@ gorro_seleccion = image.load("assets/GorroSeleccion.png")  # Carga el icono de s
 gorro_roto = image.load("assets/GorroRoto.png")  # Carga el icono de gorro roto, que se usa al morir
 gorro_poderoso = image.load("assets/GorroPoderoso.png")  # Carga el icono de gorro poderoso, que se usa al ganar el juego
 
+# Imagenes de nivel 
+suelo = image.load("assets/Suelo.png")  # Carga la imagen del suelo
+muro = image.load("assets/Muro.png")  # Carga la imagen del muro
+vision_enemigo = image.load("assets/VisionEnemigo.png")  # Carga la imagen de la visión del enemigo
+escondite = image.load("assets/Escondite.png")  # Carga la imagen del escondite
+escondite_usado = image.load("assets/EsconditeUsado.png")  # Carga la imagen del escondite usado
+diana = image.load("assets/Diana.png")  # Carga la imagen de la diana, que muestra donde se tenía que disparar
+meta = image.load("assets/Meta.png")  # Carga la imagen de la meta
+
+# Carga las imágenes del jugador en una lista
+frames_jugador = [
+    image.load("assets/SueloMago1.png"),
+    image.load("assets/SueloMago2.png"),
+    image.load("assets/SueloMago3.png"),
+    image.load("assets/SueloMago4.png")]
+
+# Carga las imágenes del enemigo en una lista
+frames_enemigo = [
+    image.load("assets/SueloEnemigo1.png"),
+    image.load("assets/SueloEnemigo2.png"),
+    image.load("assets/SueloEnemigo3.png"),
+    image.load("assets/SueloEnemigo4.png")]
+
 musica_nivel = mixer.Sound("assets/MusicaNivel.mp3")  # Carga la música del nivel
 sonido_disparo = mixer.Sound("assets/SonidoDisparo.mp3")  # Carga el sonido del disparo
+sonido_muerte_enemigo = mixer.Sound("assets/SonidoMuerte.mp3")  # Carga el sonido de muerte del enemigo
 sonido_menu = mixer.Sound("assets/SonidoMenu.mp3")  # Carga el sonido del menú
 sonido_perder = mixer.Sound("assets/SonidoPerder.mp3")  # Carga el sonido de perder
 sonido_win = mixer.Sound("assets/SonidoWin.mp3")  # Carga el sonido de ganar
@@ -167,6 +192,24 @@ def añadir_enemigos_a_matriz(matriz, cantidad):
                 matriz[fila][columna] = 3  # Añade un enemigo en la posición generada
                 break  # Sale del bucle al añadir el enemigo
 
+#  Frame actual del jugador basado en el tiempo (cambia cada 200 ms)
+def obtener_frame_jugador():
+    tiempo = time.get_ticks()
+    frame = (tiempo // 200) % len(frames_jugador)  
+    return frames_jugador[frame]
+
+#  Frame actual del enemigo basado en el tiempo (cambia cada 200 ms)
+def obtener_frame_enemigo():
+    tiempo = time.get_ticks()
+    frame = (tiempo // 200) % len(frames_enemigo)  
+    return frames_enemigo[frame]
+
+def menu():  # Administra la lógica del menú
+    global menu_activo
+    menu_activo = True  # Activa el menú
+    musica_nivel.stop()  # Detiene la música del nivel si estaba sonando (por si acaso)
+    sonido_menu.play(-1)  # Reproduce la música del menú en bucle
+
 def dibujar_menu():  # Esta función muestra el menú principal del juego
     pantalla.blit(imagen_inicio, (0, 0))  # Pone la imágen de inicio en la pantalla
 
@@ -196,9 +239,11 @@ def dibujar_menu_seleccion_nivel():
         texto_error = fuente_texto.render("Nivel inválido", False, "red")
         pantalla.blit(texto_error, ((ancho // 2) - texto_error.get_width() // 2, 250))  # Se pone el texto de error si el nivel no es válido
 
-def cambio_nivel(nivel):  # Esta función cambia el nivel del juego
+def cambio_nivel(nivel, por_nivel = False):  # Esta función cambia el nivel del juego (además de un bool para indicar si se cambio con las flechas o pasando el nivel)
     global indi_nivel_seleccionado
     indi_nivel_seleccionado = (indi_nivel_seleccionado + nivel) % len(guardados)  # Cambia el nivel seleccionado a uno de la lista de niveles válidos
+    if por_nivel:
+        sonido_win.play()  # Reproduce el sonido de ganar el nivel
 
 def dibujar_hud():  # Esta función muestra el HUD del juego
     global ancho, alto, cantidad_cuadros_ancho, tamaño_cuadro,cantidad_disparos
@@ -207,7 +252,7 @@ def dibujar_hud():  # Esta función muestra el HUD del juego
     pantalla.blit(disparos_restantes, ((cantidad_cuadros_ancho + 1.35)* tamaño_cuadro, 20))  # Dibuja el texto en la pantalla
     pantalla.blit(icono_municion, ((cantidad_cuadros_ancho + 0.9)* tamaño_cuadro, 30))  # Dibuja el icono de munición en la pantalla
 
-def dibujar_matriz(matriz):
+def dibujar_matriz(matriz, tipo=False):  # Esta función dibuja la matriz del juego en la pantalla, con un bool indicando si es de juego (false) o de disparo (true)
     # DISCLAIMER: El código no funciona correctamente con (fila, columna) en las coords, ya que no se dibujaría bien
     # Si se quisiera dibujar lo que sale en (0, 1) en la matriz y dibujamos (0, 1) en pantalla, se dibujaría abajo del la esquina inferior izquierda
     # (ya que no nos movemos horizontalmente y bajamos 1 verticalmente): este cuadro se dibujaría realmente en (1, 0), por lo que se debe hacer (columna, fila)
@@ -218,27 +263,41 @@ def dibujar_matriz(matriz):
     pantalla.fill("black")
 
     # Se recorre la matriz: esto para dibujar los cuadros generales de la matriz
-    for fila in range(len(matriz)):
-        for columna in range(len(matriz[fila])):
-            # Se pintan los cuadros según el valor de la matriz (0 es vacío, 1 es pared, 2 es jugador y 3 es enemigo)
-            if matriz[fila][columna] == 1:
-                draw.rect(pantalla, "blue", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz[fila][columna] == 2:
-                # Dibuja el jugador
-                draw.rect(pantalla, "green", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz[fila][columna] == 3:
-                # Dibuja al enemigo
-                draw.rect(pantalla, "red", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-                vision_enemigos()  # Llama a la función para calcular la visión del enemigo
-            elif matriz[fila][columna] == 4:
-                # Dibuja el área de visión del enemigo
-                draw.rect(pantalla, "orange", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz[fila][columna] == 5:
-                draw.rect(pantalla, "violet", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz[fila][columna] == 6:
-                draw.rect(pantalla, "pink", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
-            elif matriz[fila][columna] == 7:
-                draw.rect(pantalla, "yellow", (columna*tamaño_cuadro, fila*tamaño_cuadro, tamaño_cuadro, tamaño_cuadro))
+    if not tipo:  # Si no es de disparo, se dibuja la matriz del juego
+        for fila in range(len(matriz)):
+            for columna in range(len(matriz[fila])):
+                # Se pintan los cuadros según el valor de la matriz (0 es vacío, 1 es pared, 2 es jugador y 3 es enemigo)
+                if matriz[fila][columna] == 0:
+                    pantalla.blit(suelo, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja el suelo
+                if matriz[fila][columna] == 1:
+                    pantalla.blit(muro, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja los muros
+                # Se dibuja el jugador, alternando sus frames para hacerlo ver más vivo
+                elif matriz[fila][columna] == 2:
+                    frame_actual = obtener_frame_jugador()
+                    pantalla.blit(frame_actual, (columna*tamaño_cuadro, fila*tamaño_cuadro))
+                elif matriz[fila][columna] == 3:
+                    # Dibuja al enemigo
+                    frame_actual_enemigo = obtener_frame_enemigo()
+                    pantalla.blit(frame_actual_enemigo, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja el enemigo
+                    vision_enemigos()  # Llama a la función para calcular la visión del enemigo
+                elif matriz[fila][columna] == 4:
+                    # Dibuja el área de visión del enemigo
+                    pantalla.blit(vision_enemigo, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja la visión del enemigo
+                elif matriz[fila][columna] == 5:
+                    pantalla.blit(escondite, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja el escondite
+                elif matriz[fila][columna] == 6:
+                    pantalla.blit(escondite_usado, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja el escondite usado
+                elif matriz[fila][columna] == 7:
+                    pantalla.blit(meta, (columna*tamaño_cuadro, fila*tamaño_cuadro))  # Dibuja la meta
+    else:  # Si es de disparo, se dibuja la matriz del disparo
+        for fila in range(len(matriz)):
+            for columna in range(len(matriz[fila])):
+                # Se pintan los cuadros según el valor de la matriz (0 es vacío, 1 es pared, 2 es jugador y 3 es enemigo)
+                if matriz[fila][columna] == 3:
+                    # Dibuja la diana
+                    pantalla.blit(diana, (columna*tamaño_cuadro, fila*tamaño_cuadro))
+                    return
+
 
 def paso_de_nivel():  # Esta función se encarga de pasar al siguiente nivel
     global indi_nivel_seleccionado, matriz_juego, pasando_nivel_activo, tiempo_pasando_nivel, ganar_juego_activo, cantidad_disparos, guardados, guardados_sin_modificar, cantidad_enemigos_nivel
@@ -247,13 +306,14 @@ def paso_de_nivel():  # Esta función se encarga de pasar al siguiente nivel
     tiempo_pasando_nivel = time.get_ticks()  # Guarda el tiempo de inicio del paso de nivel
     cantidad_disparos = 5  # Reinicia la cantidad de disparos a 5 al pasar de nivel
     guardados = deepcopy(guardados_sin_modificar) # Reinicia los guardados a los originales, para que no se modifiquen al pasar de nivel
+    musica_nivel.stop()
 
-    cambio_nivel(1)  # Cambia al siguiente nivel
+    cambio_nivel(1, True)  # Cambia al siguiente nivel
     if indi_nivel_seleccionado == 0:  # Si se llega al último nivel, se activa la variable de ganar el juego
             ganar_juego()
             pasando_nivel_activo = False  # Si se llega al último nivel, se activa la variable de ganar el juego
     while not verificar_validez_nivel(indi_nivel_seleccionado):  # Si el nivel no es válido, se cambia al siguiente nivel
-        cambio_nivel(1)  # Cambia al siguiente nivel
+        cambio_nivel(1, True)  # Cambia al siguiente nivel
         if indi_nivel_seleccionado == 0:  # Si se llega al último nivel, se activa la variable de ganar el juego
             ganar_juego()  # Si se llega al último nivel, se activa la variable de ganar el juego
             pasando_nivel_activo = False  # Si se llega al último nivel, se activa la variable de ganar el juego
@@ -307,6 +367,8 @@ def game_over():  # Esta función se encarga de administrar el coportamiento del
     guardados = deepcopy(guardados_sin_modificar)  # Reinicia los guardados a los originales, para que no se modifiquen al morir
     matriz_juego = guardados[indi_nivel_seleccionado]  # Carga la matriz del nivel seleccionado
     añadir_enemigos_a_matriz(matriz_juego, cantidad_enemigos_nivel)  # Añade enemigos a la matriz del nivel seleccionado
+    musica_nivel.stop()  # Detiene la música del nivel
+    sonido_perder.play()  # Reproduce el sonido de perder
 
 def dibujar_game_over():
     global indi_nivel_seleccionado, matriz_juego
@@ -573,7 +635,7 @@ def sniping_mode(cursor_pos, disparo=False):
     if not disparo:  # Si no se disparó, la mira gira
         angulo += 2
     if disparo:
-        dibujar_matriz(matriz_disparo)
+        dibujar_matriz(matriz_disparo, True)  # Dibuja la matriz de disparo
     # Aumentar ángulo (puedes ajustar la velocidad aquí)
     # Rotar la imagen
     imagen_rotada = transform.rotate(mira, angulo)  # Rota la imagen de la mira
@@ -592,7 +654,7 @@ def cursor_en_pos_valida(cursor_pos, matriz):
     return None  # Si la posición no está dentro de la matriz, se devuelve None
 
 def administrar_disparo():
-    global disparo, cantidad_disparos, mostrando_disparo, tiempo_disparo, matriz_disparo, coords_enemigo_eliminar, matriz_juego
+    global disparo, cantidad_disparos, mostrando_disparo, tiempo_disparo, matriz_disparo, coords_enemigo_eliminar, matriz_juego, disparo_atinado
     disparo = True  # Se activa la variable de disparo (esto detiene la rotación de la mira)
     cantidad_disparos -= 1  # Se resta 1 al contador de disparos
     mostrando_disparo = True  # Se activa la variable para mostrar el disparo
@@ -606,8 +668,14 @@ def administrar_disparo():
         cantidad_disparos += 1  # Se suma 1 al contador de disparos, ya que no se disparó
     elif cursor_en_pos_valida(mouse.get_pos(), matriz_disparo) == True:
         # Si el disparo es válido, se elimina el enemigo al que se le hizo click
+        sonido_disparo.play()  # Reproduce el sonido del disparo
         matriz_juego[coords_enemigo_eliminar[1]][coords_enemigo_eliminar[0]] = 0
         limpiar_vision_enemigos()  # Llama a la función para eliminar los restos del área de visión del enemigo eliminado
+        disparo_atinado = True  # Se activa la variable de disparo atinado
+    else:
+        sonido_disparo.play()  # Reproduce el sonido del disparo
+
+menu() # Llama a la función para mostrar el menú al iniciar el juego
 
 # Bucle que corre el juego mientras running sea True
 while running:
@@ -638,9 +706,11 @@ while running:
             elif evento.key == K_RETURN and selector_activo:  # Si se presiona la tecla ENTER, se inicia el juego
                 if verificar_validez_nivel(indi_nivel_seleccionado):  # Verifica si el nivel que se va a cargar es válido
                     selector_activo = False  # Se desactiva el selector de nivel
+                    sonido_menu.stop()  # Se detiene la música del menú
                     guardados = deepcopy(guardados_sin_modificar)  # Reinicia los guardados a los originales, para que no se modifiquen al iniciar el juego
                     matriz_juego = guardados[indi_nivel_seleccionado]  # Se carga la matriz del nivel seleccionado
                     añadir_enemigos_a_matriz(matriz_juego, cantidad_enemigos_nivel)  # Añade los enemigos a la matriz del nivel seleccionado
+                    musica_nivel.play(-1)  # Reproduce la música del nivel seleccionado en bucle
 
             elif not player_pos is None and not sniping and not menu_activo and not selector_activo:  # Si el jugador no es None y no se está en otro modo, se revisa si se presionan las teclas
                 # Si se presiona la tecla W, A, S o D, se mueve el jugador en la dirección correspondiente, claramente evitando que se chocque con una pared
@@ -663,7 +733,7 @@ while running:
             if evento.key == K_ESCAPE:  
                 # Si se presiona la tecla ESCAPE, se vuelve al menú
                 if not menu_activo and not selector_activo and not ganar_juego_activo and not pasando_nivel_activo:  # Si no se está en el menú, se vuelve al menú
-                    menu_activo = True  # Se activa el menú
+                    menu()
                     selector_activo = False  # Se desactiva el selector de nivel
                     guardados = deepcopy(guardados_sin_modificar)  # Se reinicia la lista de guardados a su estado original
                     print(guardados)  # Imprime la lista de guardados para verificar que se reinició correctamente
@@ -688,19 +758,24 @@ while running:
         disparo = False  # Se desactiva la variable de disparo
         mostrando_disparo = False  # Se desactiva la variable para mostrar el disparo
         tiempo_disparo = None  # Se reinicia el tiempo de cuando se disparó
+        if disparo_atinado:
+            sonido_muerte_enemigo.play()
+            disparo_atinado = False  # Se desactiva la variable de disparo atinado
             
     if tiempo_pasando_nivel is not None and time.get_ticks() - tiempo_pasando_nivel >= tiempo_mostrar_pantallas:  # Si se está pasando de nivel, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el paso de nivel
         pasando_nivel_activo = False  # Se desactiva el paso de nivel
         tiempo_pasando_nivel = None  # Se reinicia el tiempo de cuando se pasó de nivel
+        musica_nivel.play(-1)  # Reproduce la música del nivel seleccionado en bucle
 
     if tiempo_ganar_juego is not None and time.get_ticks() - tiempo_ganar_juego >= tiempo_mostrar_pantallas:  # Si se está ganando el juego, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el mensaje de victoria
         ganar_juego_activo = False  # Se desactiva el mensaje de victoria
-        menu_activo = True  # Se activa el menú
+        menu()
         tiempo_ganar_juego = None  # Se reinicia el tiempo de cuando se ganó el juego
 
     if tiempo_game_over is not None and time.get_ticks() - tiempo_game_over >= tiempo_mostrar_pantallas:  # Si se está en el game over, se revisa si el tiempo transcurrido es mayor al tiempo de mostrar el game over
         game_over_activo = False  # Se desactiva el game over
         tiempo_game_over = None  # Se reinicia el tiempo de cuando se pasó el game over
+        musica_nivel.play(-1)  # Reproduce la música del nivel seleccionado en bucle
 
     # flip() the display to put your work on screen
     display.flip()
