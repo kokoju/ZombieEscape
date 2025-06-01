@@ -1,0 +1,16 @@
+*====================* ¿CÓMO CREAR UN NIVEL? *====================*
+1. Abrir el archivo "guardados.txt": este está en forma de una lista de Python, donde cada nivel es una matriz contenida dentro de la lista de niveles
+2. Ponerse al final de la lista
+3. Crear una matriz de 20x35 a su gusto: esta debe tener espacios después de cada coma y siempre debe tener una meta y un solo jugador para ser válida
+Recordamos que:
+# 0 = vacío
+# 1 = pared
+# 2 = jugador
+# 3 = enemigo
+# 4 = visión del enemigo
+# 5 = escondite
+# 6 = escondite usado
+# 7 = salida
+
+   Extracto de una buena matriz --> [1, 0, 0, ...]
+4. Guardar los cambios en el archivo: si todo fue hecho correctamente, el nivel estará disponible para jugarlo al volver a correr el juego: si no es el caso, se marcará en rojo en la selección de niveles
